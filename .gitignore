@@ -1,0 +1,11 @@
+# Ignorar arquivos de configuração local e chaves
+backend/.env
+.env
+
+# Ignorar arquivos pesados enviados por alunos nos testes locais
+backend/app/uploads/
+
+# Ignorar pastas virtuais do Python e cache
+__pycache__/
+.venv/
+env/
