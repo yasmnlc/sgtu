@@ -16,8 +16,8 @@ O sistema elimina o uso de formulários físicos e listas de papel estáticas, s
 
 ## 🔗 Links Externos do Projeto
 Para acompanhar os artefatos e o progresso do desenvolvimento do SGTU, acesse os links abaixo:
-* **Prototipação de Interface:**
-* **Gestão do Projeto & Sprint Planning (Trello/GitHub Projects):**
+* **Prototipação de Interface:** https://www.figma.com/proto/wDQGy5mO0hVmFYHZLfJfow/Trabalho-ES?node-id=0-1&t=UerY5wSckJnzJsvA-1
+* **Gestão do Projeto & Sprint Planning (Trello/GitHub Projects):** https://sgtu.atlassian.net/jira/software/projects/SGTU/boards/2?atlOrigin=eyJpIjoiYmQ1MGUzOWVkOGIxNDgxOGE2NTQxNjNhZTM0YTZkZmQiLCJwIjoiaiJ9
 * **Slides de Apresentação da Proposta (Canva):** https://canva.link/v131ic8v1j2l386
 
 ---
