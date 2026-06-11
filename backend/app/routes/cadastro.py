@@ -119,13 +119,62 @@ async def listar_pendencias(db = Depends(get_db)):
     
     resposta = []
     for estudante in estudantes_pendentes:
+        nome_arquivo = os.path.basename(estudante["documento_url"])
+
         resposta.append({
             "id": str(estudante["_id"]), 
             "nome_completo": estudante["nome_completo"],
             "cpf": estudante["cpf"],
             "universidade": estudante["universidade"],
             "curso": estudante["curso"],
-            "data_envio": estudante["data_envio"].strftime("%d/%m/%Y") # Formata a data para o BR
+            "data_envio": estudante["data_envio"].strftime("%d/%m/%Y"),
+            "documento_nome": nome_arquivo
         })
         
     return resposta
+
+@router.get("/autorizados")
+async def listar_autorizados(db = Depends(get_db)):
+    """Rota para o Motorista listar apenas os alunos que foram aprovados pela Secretaria"""
+    colecao = db["estudantes"]
+    
+    estudantes_autorizados = list(colecao.find({"status": "Autorizado"}).sort("nome_completo", 1))
+    
+    resposta = []
+    for estudante in estudantes_autorizados:
+        resposta.append({
+            "id": str(estudante["_id"]),
+            "nome_completo": estudante["nome_completo"],
+            "universidade": estudante["universidade"],
+            "curso": estudante["curso"]
+        })
+        
+    return resposta
+
+@router.get("/secretaria/dashboard")
+async def obter_dados_dashboard(db = Depends(get_db)):
+    """Rota para puxar os indicadores e dados dos gráficos da Visão Geral"""
+    colecao = db["estudantes"]
+    
+    # 1. Contagens de Status
+    total_cadastrados = colecao.count_documents({})
+    pendentes = colecao.count_documents({"status": "Pendente"})
+    autorizados = colecao.count_documents({"status": "Autorizado"})
+    
+    # 2. Agregação por Universidade para o Gráfico
+    pipeline = [
+        {"$group": {"_id": "$universidade", "quantidade": {"$sum": 1}}}
+    ]
+    resultado_busca = list(colecao.aggregate(pipeline))
+    
+    por_universidade = {}
+    for item in resultado_busca:
+        if item["_id"]:
+            por_universidade[item["_id"]] = item["quantidade"]
+            
+    return {
+        "total_cadastrados": total_cadastrados,
+        "pendentes": pendentes,
+        "autorizados": autorizados,
+        "por_universidade": por_universidade
+    }

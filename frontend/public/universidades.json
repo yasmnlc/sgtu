@@ -1,0 +1,11 @@
+[
+  { "id": "UFC", "nome": "(UFC) Universidade Federal do Ceará" },
+  { "id": "UNICATÓLICA", "nome": "(UNICATÓLICA) Centro Universitário Católica de Quixadá" },
+  { "id": "IFCE", "nome": "(IFCE) Instituto Federal do Ceará" },
+  { "id": "FADAT", "nome": "(FADAT) Faculdade Dom Adélia Tomás" },
+  { "id": "UECE_QXD", "nome": "(UECE QXD) Universidade Estadual do Ceará - Quixadá" },
+  { "id": "UECE_QXB", "nome": "(UECE QXB) Universidade Estadual do Ceará - Quixeramobim" },
+  { "id": "ESTACIO", "nome": "(ESTÁCIO) Faculdade Estácio" },
+  { "id": "UNOPAR", "nome": "(UNOPAR) Universidade Norte do Paraná (Unopar)" }
+
+]

@@ -84,7 +84,9 @@
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-gray-500 mb-1">Universidade</label>
-                            <input type="text" id="universidade" placeholder="Ex: UFC" required class="w-full px-4 py-2.5 rounded-lg border text-sm focus:outline-none focus:border-blue-900">
+                            <select id="universidade" required class="w-full px-4 py-2.5 rounded-lg border text-sm bg-white text-slate-800 focus:outline-none focus:border-blue-900 cursor-pointer">
+                                <option value="" disabled selected>Carregando instituições...</option>
+                            </select>
                         </div>
                         <div>
                             <label class="block text-xs font-semibold text-gray-500 mb-1">Curso</label>
@@ -178,56 +180,99 @@
                 <p class="text-xs opacity-60">Prefeitura Municipal</p>
             </div>
             <nav class="space-y-1 flex-1">
-                <a href="#" class="flex items-center space-x-3 p-3 rounded-xl text-sm font-medium opacity-60 hover:opacity-100 transition-all"><i class="fa-solid fa-chart-pie text-lg"></i> <span>Visão Geral</span></a>
-                <a href="#" class="flex items-center space-x-3 p-3 rounded-xl text-sm font-bold bg-blue-900 border-l-4 border-green-500 transition-all"><i class="fa-solid fa-file-shield text-lg"></i> <span>Validação de Docs</span></a>
-                <a href="#" class="flex items-center space-x-3 p-3 rounded-xl text-sm font-medium opacity-60 hover:opacity-100 transition-all"><i class="fa-solid fa-users text-lg"></i> <span>Estudantes Cadastrados</span></a>
-                <a href="#" class="flex items-center space-x-3 p-3 rounded-xl text-sm font-medium opacity-60 hover:opacity-100 transition-all"><i class="fa-solid fa-gear text-lg"></i> <span>Configurações</span></a>
+                <button id="btn-sec-visao-geral" class="w-full flex items-center space-x-3 p-3 rounded-xl text-sm font-medium bg-blue-900 border-l-4 border-green-500 transition-all">
+                    <i class="fa-solid fa-chart-pie text-lg"></i> <span>Visão Geral</span>
+                </button>
+                <button id="btn-sec-validacao" class="w-full flex items-center space-x-3 p-3 rounded-xl text-sm font-medium opacity-60 hover:opacity-100 transition-all">
+                    <i class="fa-solid fa-file-shield text-lg"></i> <span>Validação de Docs</span>
+                </button>
+                <button id="btn-sec-cadastrados" class="w-full flex items-center space-x-3 p-3 rounded-xl text-sm font-medium opacity-60 hover:opacity-100 transition-all">
+                    <i class="fa-solid fa-users text-lg"></i> <span>Estudantes Cadastrados</span>
+                </button>
             </nav>
         </div>
 
-        <div class="flex-1 p-8 space-y-6 bg-slate-50/50">
-            <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b pb-4">
+        <div class="flex-1 p-8 bg-slate-50/50 overflow-y-auto">
+            
+            <div id="sub-view-visao-geral" class="space-y-6">
                 <div>
-                    <h3 class="text-2xl font-bold text-gray-800">Verificações de Matrícula Pendentes</h3>
-                    <p class="text-xs text-gray-400 mt-0.5">Revise, analise o arquivo PDF enviado e valide o acesso ao transporte.</p>
+                    <h3 class="text-2xl font-bold text-gray-800">Painel de Controle</h3>
+                    <p class="text-xs text-gray-400 mt-0.5">Indicadores gerais da gestão de transporte universitário.</p>
                 </div>
-                <div class="relative w-full sm:w-72">
-                    <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-gray-400 text-sm"></i>
-                    <input type="text" placeholder="Filtrar por nome ou CPF..." class="w-full border rounded-xl pl-9 pr-4 py-2 text-sm bg-white focus:outline-none focus:border-blue-900">
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white border border-gray-200 rounded-xl p-6 shadow-sm flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Total Cadastrados</p>
+                            <h3 id="card-total-cadastrados" class="text-3xl font-black text-gray-800 mt-2">--</h3>
+                        </div>
+                        <div class="w-12 h-12 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-users"></i>
+                        </div>
+                    </div>
+
+                    <div class="bg-white border border-gray-200 rounded-xl p-6 shadow-sm flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Aprovações Pendentes</p>
+                            <h3 id="card-total-pendentes" class="text-3xl font-black text-amber-600 mt-2">--</h3>
+                        </div>
+                        <div class="w-12 h-12 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-clock"></i>
+                        </div>
+                    </div>
+
+                    <div class="bg-white border border-gray-200 rounded-xl p-6 shadow-sm flex items-center justify-between">
+                        <div>
+                            <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Estudantes Autorizados</p>
+                            <h3 id="card-total-autorizados" class="text-3xl font-black text-green-600 mt-2">--</h3>
+                        </div>
+                        <div class="w-12 h-12 rounded-xl bg-green-50 text-green-600 flex items-center justify-center text-xl">
+                            <i class="fa-solid fa-circle-check"></i>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-white border border-gray-200 rounded-xl p-6 shadow-sm min-h-[300px] flex flex-col justify-between">
+                    <div>
+                        <h4 class="font-bold text-gray-700 text-sm"><i class="fa-solid fa-chart-bar mr-2 text-blue-500"></i>Distribuição por Universidade / Instituição</h4>
+                        <p class="text-xs text-gray-400 mt-0.5">Indicador gerencial para planejamento de rotas e frotas.</p>
+                    </div>
+                    <div class="flex-1 flex items-center justify-center text-gray-300 text-xs italic border border-dashed rounded-lg my-4">
+                        Área reservada para o gráfico (Chart.js)
+                    </div>
                 </div>
             </div>
 
-            <div class="overflow-x-auto bg-white border border-gray-200 rounded-xl shadow-sm">
-                <table class="w-full text-left border-collapse text-sm">
-                    <thead>
-                        <tr class="bg-gray-100 border-b text-gray-600 font-bold uppercase text-[11px] tracking-wider">
-                            <th class="p-4 px-6">Data de Envio</th>
-                            <th class="p-4">Nome do Estudante</th>
-                            <th class="p-4">Universidade</th>
-                            <th class="p-4">Curso Indicado</th>
-                            <th class="p-4 text-center">Documento</th>
-                            <th class="p-4 text-center">Ações de Auditoria</th>
-                        </tr>
-                    </thead>
-                    <tbody id="tabela-pendencias" class="divide-y divide-gray-100">
-                        <tr class="hover:bg-gray-50/80 text-gray-700 transition-colors">
-                            <td class="p-4 px-6 text-xs font-medium text-gray-400">31 de mai.</td>
-                            <td class="p-4 font-semibold text-gray-900">Maria Silva Santos</td>
-                            <td class="p-4 text-xs">UFC Quixadá</td>
-                            <td class="p-4 text-xs">Ciência da Computação</td>
-                            <td class="p-4 text-center">
-                                <a href="#" class="inline-flex items-center space-x-1 text-blue-600 hover:text-blue-800 font-medium text-xs bg-blue-50 px-2.5 py-1 rounded-md border border-blue-100">
-                                    <i class="fa-solid fa-file-pdf"></i> <span>Abrir_Comprovante.pdf</span>
-                                </a>
-                            </td>
-                            <td class="p-4 text-center">
-                                <button class="bg-green-600 text-white px-4 py-1.5 rounded-lg text-xs font-bold mr-1 hover:bg-green-700 shadow-sm transition-all">Aprovar</button>
-                                <button class="bg-red-50 text-red-600 border border-red-200 px-4 py-1.5 rounded-lg text-xs font-bold hover:bg-red-100 transition-all">Recusar</button>
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div id="sub-view-validacao" class="space-y-6 hidden">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b pb-4">
+                    <div>
+                        <h3 class="text-2xl font-bold text-gray-800">Verificações de Matrícula Pendentes</h3>
+                        <p class="text-xs text-gray-400 mt-0.5">Revise, analise o arquivo PDF enviado e valide o acesso ao transporte.</p>
+                    </div>
+                    <div class="relative w-full sm:w-72">
+                        <i class="fa-solid fa-magnifying-glass absolute left-3 top-3 text-gray-400 text-sm"></i>
+                        <input type="text" placeholder="Filtrar por nome ou CPF..." class="w-full border rounded-xl pl-9 pr-4 py-2 text-sm bg-white focus:outline-none focus:border-blue-900">
+                    </div>
+                </div>
+
+                <div class="overflow-x-auto bg-white border border-gray-200 rounded-xl shadow-sm">
+                    <table class="w-full text-left border-collapse text-sm">
+                        <thead>
+                            <tr class="bg-gray-100 border-b text-gray-600 font-bold uppercase text-[11px] tracking-wider">
+                                <th class="p-4 px-6">Data de Envio</th>
+                                <th class="p-4">Nome do Estudante</th>
+                                <th class="p-4">Universidade</th>
+                                <th class="p-4">Curso Indicado</th>
+                                <th class="p-4 text-center">Documento</th>
+                                <th class="p-4 text-center">Ações de Auditoria</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tabela-pendencias" class="divide-y divide-gray-100">
+                            </tbody>
+                    </table>
+                </div>
             </div>
+
         </div>
     </section>
 
