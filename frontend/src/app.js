@@ -355,3 +355,36 @@ async function inicializarSelectUniversidades() {
         selectUni.innerHTML = '<option value="" disabled selected>Erro ao carregar instituições</option>';
     }
 }
+
+const btnSolicitacoes = document.getElementById('btn-solicitacoes');
+const modalSolicitacoes = document.getElementById('modal-solicitacoes');
+const fecharModal = document.getElementById('fechar-modal');
+
+if (btnSolicitacoes) {
+    btnSolicitacoes.addEventListener('click', () => {
+        modalSolicitacoes.classList.remove('hidden');
+        modalSolicitacoes.classList.add('flex');
+    });
+}
+
+if (fecharModal) {
+    fecharModal.addEventListener('click', () => {
+        modalSolicitacoes.classList.add('hidden');
+        modalSolicitacoes.classList.remove('flex');
+    });
+}
+
+modalSolicitacoes?.addEventListener('click', (e) => {
+    if (e.target === modalSolicitacoes) {
+        modalSolicitacoes.classList.add('hidden');
+        modalSolicitacoes.classList.remove('flex');
+    }
+});
+
+document.getElementById('btn-opcao-1')?.addEventListener('click', () => {
+    alert('Solicitar Carteirinha');
+});
+
+document.getElementById('btn-opcao-2')?.addEventListener('click', () => {
+    alert('Solicitar Revisão');
+});
