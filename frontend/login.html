@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SGTU - Login</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        'sgtu-dark': '#0b0e4f',
+                        'sgtu-green': '#22c55e',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="bg-gray-100 font-sans min-h-screen flex items-center justify-center p-4">
+
+    <div class="w-full max-w-md bg-white shadow-2xl rounded-2xl overflow-hidden border border-gray-100 animate-fade-in">
+        
+        <div class="bg-sgtu-dark text-white p-8 text-center relative">
+            <div class="absolute top-4 right-4 bg-sgtu-green text-white text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full shadow">
+                v2.0
+            </div>
+            <h1 class="text-4xl font-black tracking-wider text-white">SGTU</h1>
+            <p class="text-xs opacity-75 mt-2 tracking-wide">Sistema de Gestão de Transporte Universitário</p>
+        </div>
+
+        <form id="form-login" class="p-8 space-y-5">
+            
+            <div>
+                <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Tipo de Acesso</label>
+                <div class="relative">
+                    <i class="fa-solid fa-user-shield absolute left-3 top-3.5 text-gray-400 text-sm"></i>
+                    <select id="login-perfil" required class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-300 text-sm bg-white text-slate-800 focus:outline-none focus:border-sgtu-dark cursor-pointer font-medium">
+                        <option value="" disabled selected>Selecione o seu perfil...</option>
+                        <option value="estudante">Portal do Estudante</option>
+                        <option value="motorista">Portal do Motorista</option>
+                        <option value="secretaria">Portal da Secretaria (Admin)</option>
+                    </select>
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">CPF ou Usuário</label>
+                <div class="relative">
+                    <i class="fa-solid fa-id-card absolute left-3 top-3.5 text-gray-400 text-sm"></i>
+                    <input type="text" id="login-identificacao" placeholder="Apenas números" required 
+                        class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-300 text-sm focus:outline-none focus:border-sgtu-dark text-slate-800 bg-white">
+                </div>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">Senha de Acesso</label>
+                <div class="relative">
+                    <i class="fa-solid fa-lock absolute left-3 top-3.5 text-gray-400 text-sm"></i>
+                    <input type="password" id="login-senha" placeholder="••••••••" required 
+                        class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-300 text-sm focus:outline-none focus:border-sgtu-dark text-slate-800 bg-white">
+                </div>
+            </div>
+
+            <button type="submit" 
+                class="w-full bg-sgtu-dark text-white font-bold py-3.5 rounded-xl shadow-lg hover:bg-opacity-95 transition-all text-sm tracking-wide mt-4 flex items-center justify-center space-x-2">
+                <span>Entrar no Sistema</span>
+                <i class="fa-solid fa-arrow-right-to-bracket text-xs"></i>
+            </button>
+
+            <div class="text-center mt-4 pb-2">
+                <p class="text-sm text-gray-500">
+                    É estudante e não tem acesso? 
+                    <button type="button" id="btn-abrir-cadastro" class="font-bold text-blue-600 hover:text-blue-800 hover:underline transition-all">
+                        Criar conta
+                    </button>
+                </p>
+            </div>
+
+            <div class="text-center pt-4 border-t border-gray-100">
+                <p class="text-[11px] text-gray-400">Prefeitura Municipal de Boa Viagem</p>
+                <p class="text-[10px] text-gray-300 mt-0.5">Suporte: secretaria.educacao@boaviagem.ce.gov.br</p>
+            </div>
+        </form>
+
+        <form id="form-cadastro-conta" class="p-8 space-y-4 hidden">
+            <div class="text-center mb-6">
+                <h2 class="text-xl font-bold text-sgtu-dark">Criar Conta de Estudante</h2>
+                <p class="text-xs text-gray-500 mt-1">Preencha seus dados para solicitar acesso.</p>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Nome Completo</label>
+                <input type="text" id="reg-nome" placeholder="Ex: Maria Silva" required 
+                    class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-sm focus:outline-none focus:border-sgtu-dark bg-white text-slate-800">
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">CPF</label>
+                <input type="text" id="reg-cpf" placeholder="Apenas números" required 
+                    class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-sm focus:outline-none focus:border-sgtu-dark bg-white text-slate-800">
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Criar Senha</label>
+                <input type="password" id="reg-senha" placeholder="Mínimo de 6 caracteres" required minlength="6"
+                    class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-sm focus:outline-none focus:border-sgtu-dark bg-white text-slate-800">
+            </div>
+
+            <button type="submit" 
+                class="w-full bg-sgtu-green text-white font-bold py-3.5 rounded-xl shadow-lg hover:bg-opacity-95 transition-all text-sm tracking-wide mt-2">
+                Cadastrar
+            </button>
+
+            <div class="text-center pt-4 border-t border-gray-100 mt-4">
+                <button type="button" id="btn-voltar-login" class="text-sm font-semibold text-blue-600 hover:text-blue-800 transition-colors">
+                    <i class="fa-solid fa-arrow-left mr-1"></i> Voltar para o Login
+                </button>
+            </div>
+        </form>
+
+    </div>
+
+    <script>
+        const API_BASE_URL = 'http://127.0.0.1:8000';
+
+        const formLogin = document.getElementById('form-login');
+        const formCadastro = document.getElementById('form-cadastro-conta');
+        const btnAbrirCadastro = document.getElementById('btn-abrir-cadastro');
+        const btnVoltarLogin = document.getElementById('btn-voltar-login');
+
+        btnAbrirCadastro.addEventListener('click', () => {
+            formLogin.classList.add('hidden');
+            formCadastro.classList.remove('hidden');
+        });
+
+        btnVoltarLogin.addEventListener('click', () => {
+            formCadastro.classList.add('hidden');
+            formLogin.classList.remove('hidden');
+        });
+
+        formCadastro.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const nome = document.getElementById('reg-nome').value;
+            const cpf = document.getElementById('reg-cpf').value;
+            const senha = document.getElementById('reg-senha').value;
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/cadastrar`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        nome_completo: nome,
+                        cpf: cpf,
+                        senha: senha,
+                        perfil: "estudante"
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    alert(data.mensagem);
+ 
+                    formCadastro.classList.add('hidden');
+                    formLogin.classList.remove('hidden');
+
+                    document.getElementById('login-identificacao').value = cpf;
+                    document.getElementById('login-perfil').value = 'estudante';
+                    formCadastro.reset();
+                } else {
+                    alert(`Atenção: ${data.detail || 'Não foi possível criar a conta.'}`);
+                }
+            } catch (error) {
+                console.error("Erro na requisição:", error);
+                alert("Erro ao conectar com o servidor. Verifique se o Uvicorn está rodando.");
+            }
+        });
+
+        formLogin.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const perfil = document.getElementById('login-perfil').value;
+            const cpf = document.getElementById('login-identificacao').value;
+            const senha = document.getElementById('login-senha').value;
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/login`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        cpf: cpf,
+                        senha: senha,
+                        perfil: perfil
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    localStorage.setItem('sgtu_token', data.token_acesso);
+                    localStorage.setItem('sgtu_perfil_logado', data.perfil);
+                    localStorage.setItem('sgtu_usuario_nome', data.nome);
+                    
+                    window.location.href = 'index.html';
+                } else {
+                    alert(`Falha no login: ${data.detail}`);
+                }
+            } catch (error) {
+                console.error("Erro na requisição:", error);
+                alert("Erro ao conectar com o servidor. Verifique se o Uvicorn está rodando.");
+            }
+        });
+    </script>
+</body>
+</html>

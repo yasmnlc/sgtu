@@ -6,6 +6,7 @@ from pydantic import BaseModel
 from fastapi import APIRouter, UploadFile, File, Form, Depends, HTTPException, status
 from pymongo.errors import DuplicateKeyError
 
+from app.security import obter_usuario_atual
 from ..database import get_db
 
 
@@ -23,7 +24,8 @@ class AtualizacaoStatus(BaseModel):
 async def atualizar_status_estudante(
     estudante_id: str, 
     dados: AtualizacaoStatus, 
-    db = Depends(get_db)
+    db = Depends(get_db),
+    usuario_atual: dict = Depends(obter_usuario_atual)
 ):
     """Rota para a Secretaria aprovar ou recusar a matrícula de um estudante"""
     colecao = db["estudantes"]
@@ -56,9 +58,9 @@ async def cadastrar_estudante(
     universidade: str = Form(...),
     curso: str = Form(...),
     arquivo: UploadFile = File(...),
-    db = Depends(get_db)
+    db = Depends(get_db),
+    usuario_atual: dict = Depends(obter_usuario_atual)
 ):
-
     # Validação do CPF: Remove caracteres não numéricos e verifica se tem 11 dígitos
     cpf_limpo = "".join(filter(str.isdigit, cpf))
     
@@ -92,7 +94,7 @@ async def cadastrar_estudante(
         "justificativa_recusa": ""
     }
 
-    # Tratamento de Duplicidade: O CPF é único, então se já existir um cadastro com o mesmo CPF, o MongoDB lançará uma exceção de chave duplicada
+    # Tratamento de Duplicidade
     try:
         colecao = db["estudantes"]
         colecao.insert_one(novo_estudante)
@@ -110,11 +112,13 @@ async def cadastrar_estudante(
 
 
 @router.get("/pendencias")
-async def listar_pendencias(db = Depends(get_db)):
+async def listar_pendencias(
+    usuario_atual: dict = Depends(obter_usuario_atual),
+    db = Depends(get_db)
+):
     """Rota para a Secretaria listar todos os alunos com cadastro pendente"""
     colecao = db["estudantes"]
     
-    # Busca apenas os registros onde o status é 'Pendente' e ordena por data de envio (do mais antigo para o mais recente)
     estudantes_pendentes = list(colecao.find({"status": "Pendente"}).sort("data_envio", 1))
     
     resposta = []
@@ -133,8 +137,12 @@ async def listar_pendencias(db = Depends(get_db)):
         
     return resposta
 
+
 @router.get("/autorizados")
-async def listar_autorizados(db = Depends(get_db)):
+async def listar_autorizados(
+    usuario_atual: dict = Depends(obter_usuario_atual),
+    db = Depends(get_db)
+):
     """Rota para o Motorista listar apenas os alunos que foram aprovados pela Secretaria"""
     colecao = db["estudantes"]
     
@@ -151,17 +159,19 @@ async def listar_autorizados(db = Depends(get_db)):
         
     return resposta
 
+
 @router.get("/secretaria/dashboard")
-async def obter_dados_dashboard(db = Depends(get_db)):
+async def obter_dados_dashboard(
+    db = Depends(get_db),
+    usuario_atual: dict = Depends(obter_usuario_atual)
+):
     """Rota para puxar os indicadores e dados dos gráficos da Visão Geral"""
     colecao = db["estudantes"]
     
-    # 1. Contagens de Status
     total_cadastrados = colecao.count_documents({})
     pendentes = colecao.count_documents({"status": "Pendente"})
     autorizados = colecao.count_documents({"status": "Autorizado"})
     
-    # 2. Agregação por Universidade para o Gráfico
     pipeline = [
         {"$group": {"_id": "$universidade", "quantidade": {"$sum": 1}}}
     ]

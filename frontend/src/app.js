@@ -81,6 +81,9 @@ inputArquivo.addEventListener('change', function() {
 document.getElementById('form-cadastro').addEventListener('submit', async (e) => {
     e.preventDefault();
 
+    const token = localStorage.getItem('sgtu_token');
+    if (!token) return fazerLogout();
+
     const formData = new FormData();
     formData.append('nome_completo', document.getElementById('nome').value);
     formData.append('cpf', document.getElementById('cpf').value);
@@ -88,18 +91,23 @@ document.getElementById('form-cadastro').addEventListener('submit', async (e) =>
     formData.append('curso', document.getElementById('curso').value);
     formData.append('arquivo', inputArquivo.files[0]);
 
+    if (!inputArquivo.files.length) {
+        alert("Selecione um PDF.");
+        return;
+    }
+
     try {
         const response = await fetch(`${API_BASE_URL}/cadastro`, {
             method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${token}`
+            },
             body: formData
         });
 
-        const result = await response.json();
+        if (response.status === 401) return fazerLogout();
 
-        if (!inputArquivo.files.length) {
-            alert("Selecione um PDF.");
-            return;
-        }
+        const result = await response.json();
 
         if (response.ok) {
             alert(`Sucesso: ${result.mensagem}`);
@@ -110,14 +118,25 @@ document.getElementById('form-cadastro').addEventListener('submit', async (e) =>
         }
     } catch (error) {
         console.error('Erro ao conectar com a API:', error);
-        alert('Erro de Conexão: Não foi possível se comunicar com o backend FastAPI. Verifique se o servidor Uvicorn está rodando.');
+        alert('Erro de Conexão: Não foi possível se comunicar com o backend FastAPI.');
     }
 });
 
-
 window.addEventListener('DOMContentLoaded', () => {
-    switchView('estudante');
+    const perfilLogado = localStorage.getItem('sgtu_perfil_logado');
+    const nomeUsuario = localStorage.getItem('sgtu_usuario_nome');
 
+    if (!perfilLogado) {
+        window.location.href = 'login.html';
+        return;
+    }
+
+    const barraNavegacao = document.querySelector('.fixed.bottom-6');
+    if (barraNavegacao) {
+        barraNavegacao.classList.add('hidden');
+    }
+
+    switchView(perfilLogado);
     inicializarSelectUniversidades();
 
     const campoData = document.getElementById('current-date');
@@ -127,13 +146,27 @@ window.addEventListener('DOMContentLoaded', () => {
     }
 });
 
+function fazerLogout() {
+    localStorage.removeItem('sgtu_perfil_logado');
+    localStorage.removeItem('sgtu_usuario_nome');
+    localStorage.removeItem('sgtu_token');
+    window.location.href = 'login.html';
+}
 
 async function carregarPendenciasSecretaria() {
     const tabelaBody = document.getElementById('tabela-pendencias');
     if (!tabelaBody) return;
 
+    const token = localStorage.getItem('sgtu_token');
+    if (!token) return fazerLogout();
+
     try {
-        const response = await fetch(`${API_BASE_URL}/pendencias`);
+        const response = await fetch(`${API_BASE_URL}/pendencias`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (response.status === 401) return fazerLogout();
+
         const estudantes = await response.json();
 
         if (estudantes.length === 0) {
@@ -177,11 +210,7 @@ async function carregarPendenciasSecretaria() {
 }
 
 function visualizarDocumento(nomeArquivo) {
-    if (!nomeArquivo) {
-        alert("Arquivo não encontrado para este estudante.");
-        return;
-    }
-    
+    if (!nomeArquivo) return alert("Arquivo não encontrado para este estudante.");
     const urlDocumento = `${API_BASE_URL}/arquivos/${nomeArquivo}`;
     window.open(urlDocumento, '_blank');
 }
@@ -200,17 +229,23 @@ async function atualizarStatusAluno(id, novoStatus) {
     const confirmar = confirm(`Tem certeza que deseja definir este cadastro como ${novoStatus}?`);
     if (!confirmar) return;
 
+    const token = localStorage.getItem('sgtu_token');
+    if (!token) return fazerLogout();
+
     try {
         const response = await fetch(`${API_BASE_URL}/estudantes/${id}/status`, {
             method: 'PATCH',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`
             },
             body: JSON.stringify({
                 status: novoStatus,
                 justificativa_recusa: justificativa
             })
         });
+
+        if (response.status === 401) return fazerLogout();
 
         const result = await response.json();
 
@@ -231,8 +266,16 @@ async function carregarListaMotorista() {
     const containerCards = document.querySelector('#view-motorista .overflow-y-auto');
     if (!containerCards) return;
 
+    const token = localStorage.getItem('sgtu_token');
+    if (!token) return fazerLogout();
+
     try {
-        const response = await fetch(`${API_BASE_URL}/autorizados`);
+        const response = await fetch(`${API_BASE_URL}/autorizados`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (response.status === 401) return fazerLogout();
+
         const estudantes = await response.json();
 
         if (estudantes.length === 0) {
@@ -317,15 +360,21 @@ async function carregarDadosDashboard() {
     const cardPendentes = document.getElementById('card-total-pendentes');
     const cardAutorizados = document.getElementById('card-total-autorizados');
 
+    const token = localStorage.getItem('sgtu_token');
+    if (!token) return fazerLogout();
+
     try {
-        const response = await fetch(`${API_BASE_URL}/secretaria/dashboard`);
+        const response = await fetch(`${API_BASE_URL}/secretaria/dashboard`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+
+        if (response.status === 401) return fazerLogout();
+
         const dados = await response.json();
 
         if (cardTotal) cardTotal.innerText = dados.total_cadastrados;
         if (cardPendentes) cardPendentes.innerText = dados.pendentes;
         if (cardAutorizados) cardAutorizados.innerText = dados.autorizados;
-
-        console.log("Dados por universidade para o gráfico:", dados.por_universidade);
 
     } catch (error) {
         console.error('Erro ao carregar dados do painel geral:', error);
