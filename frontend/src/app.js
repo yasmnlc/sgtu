@@ -26,7 +26,9 @@ function switchView(viewName) {
             const btnVisaoGeral = document.getElementById('btn-sec-visao-geral');
             if (btnVisaoGeral) btnVisaoGeral.click();
         } else if (viewName === 'motorista') {
-            carregarListaMotorista();
+            carregarListaMotorista().then(() => {
+                atualizarOcupacao();
+            });
         } else if (viewName === 'visao-geral') {
             carregarDadosDashboard();
         }
@@ -94,6 +96,11 @@ document.getElementById('form-cadastro').addEventListener('submit', async (e) =>
 
         const result = await response.json();
 
+        if (!inputArquivo.files.length) {
+            alert("Selecione um PDF.");
+            return;
+        }
+
         if (response.ok) {
             alert(`Sucesso: ${result.mensagem}`);
             document.getElementById('form-cadastro').reset();
@@ -107,24 +114,6 @@ document.getElementById('form-cadastro').addEventListener('submit', async (e) =>
     }
 });
 
-document.querySelectorAll('.btn-embarque').forEach(button => {
-    button.addEventListener('click', function() {
-        const icon = this.querySelector('i');
-        const text = this.querySelector('span');
-
-        if (icon.classList.contains('fa-regular')) {
-            
-            icon.className = 'fa-solid fa-circle-check text-xl mb-0.5';
-            this.className = 'btn-embarque flex flex-col items-center justify-center text-green-600 font-semibold text-xs';
-            text.innerText = 'Embarcado';
-        } else {
-            
-            icon.className = 'fa-regular fa-square text-xl mb-0.5';
-            this.className = 'btn-embarque flex flex-col items-center justify-center text-gray-300 font-semibold text-xs hover:text-green-500';
-            text.innerText = 'Embarcar';
-        }
-    });
-});
 
 window.addEventListener('DOMContentLoaded', () => {
     switchView('estudante');
@@ -280,7 +269,7 @@ async function carregarListaMotorista() {
             containerCards.appendChild(card);
         });
 
-        atualizarContadorOcupacao(estudantes.length);
+        atualizarOcupacao();
 
     } catch (error) {
         console.error('Erro ao carregar lista do motorista:', error);
@@ -291,24 +280,36 @@ function alternarEmbarque(botao) {
     const icon = botao.querySelector('i');
     const text = botao.querySelector('span');
 
-    if (icon.classList.contains('fa-regular')) {
+    if (!botao.classList.contains('embarcado')) {
+        botao.classList.add('embarcado');
         icon.className = 'fa-solid fa-circle-check text-xl mb-0.5';
-        botao.className = 'btn-embarque flex flex-col items-center justify-center text-green-600 font-semibold text-xs bg-green-50 p-2.5 rounded-xl border border-green-200';
+        botao.className = 'btn-embarque embarcado flex flex-col items-center justify-center text-green-600 font-semibold text-xs bg-green-50 p-2.5 rounded-xl border border-green-200';
         text.innerText = 'Embarcado';
     } else {
+        botao.classList.remove('embarcado');
         icon.className = 'fa-regular fa-square text-xl mb-0.5';
         botao.className = 'btn-embarque flex flex-col items-center justify-center text-gray-300 font-semibold text-xs hover:text-green-500 p-2.5 rounded-xl border border-dashed border-gray-300 bg-gray-50';
         text.innerText = 'Embarcar';
     }
-    
-    const totalEmbarcados = document.querySelectorAll('.fa-circle-check').length;
-    const totalAlunos = document.querySelectorAll('.btn-embarque').length;
-    document.querySelector('.text-green-400').innerText = `${totalEmbarcados} / ${totalAlunos} Alunos`;
+
+    atualizarOcupacao();
 }
 
-function atualizarContadorOcupacao(total) {
-    const elementoContador = document.querySelector('.text-green-400');
-    if (elementoContador) elementoContador.innerText = `0 / ${total} Alunos`;
+function atualizarOcupacao() {
+    const botoes = document.querySelectorAll('.btn-embarque');
+    let embarcados = 0;
+
+    botoes.forEach(botao => {
+        const texto = botao.querySelector('span');
+        if (texto && texto.innerText.trim() === 'Embarcado') {
+            embarcados++;
+        }
+    });
+
+    const contador = document.getElementById('ocupacao-counter');
+    if (contador) {
+        contador.innerText = `${embarcados} / ${botoes.length} Alunos`;
+    }
 }
 
 async function carregarDadosDashboard() {
