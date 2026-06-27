@@ -4,7 +4,7 @@ from typing import Optional
 class UsuarioCriar(BaseModel):
     nome_completo: str
     cpf: str
-    email: str
+    email: Optional[str] = None
     senha: str
     perfil: str = "estudante"  # Pode ser: estudante, motorista, secretaria
 
@@ -16,7 +16,7 @@ class UsuarioLogin(BaseModel):
 class UsuarioNoBanco(BaseModel):
     nome_completo: str
     cpf: str
-    email: str
+    email: Optional[str] = None
     senha_hash: str
     perfil: str
     primeiro_acesso: bool = False 

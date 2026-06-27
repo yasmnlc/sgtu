@@ -2,14 +2,16 @@ from fastapi import Depends
 from app.security import obter_usuario_atual
 from pydantic import BaseModel
 from fastapi import APIRouter, HTTPException, status
+
 from ..models.usuario import UsuarioCriar, UsuarioLogin, UsuarioNoBanco
-from app.database import colecao_usuarios
+from app.database import colecao_usuarios, get_db
 from app.security import gerar_hash_senha, verificar_senha, criar_token_acesso
 
 router = APIRouter()
 
 class NovaSenha(BaseModel):
     nova_senha: str
+    email: str
 
 @router.post("/cadastrar", status_code=status.HTTP_201_CREATED)
 async def cadastrar_usuario(usuario: UsuarioCriar):
@@ -21,12 +23,13 @@ async def cadastrar_usuario(usuario: UsuarioCriar):
     novo_usuario = UsuarioNoBanco(
         nome_completo=usuario.nome_completo,
         cpf=usuario.cpf,
+        email=usuario.email,
         senha_hash=senha_criptografada,
         perfil=usuario.perfil,
         primeiro_acesso=False if usuario.perfil == "estudante" else True
     )
     
-    colecao_usuarios.insert_one(novo_usuario.dict())
+    colecao_usuarios.insert_one(novo_usuario.model_dump())
     return {"mensagem": f"Conta criada com sucesso para {usuario.nome_completo}!"}
 
 @router.post("/login")
@@ -49,14 +52,17 @@ async def login(credenciais: UsuarioLogin):
 @router.patch("/atualizar-senha")
 async def atualizar_senha_primeiro_acesso(
     dados: NovaSenha,
-    usuario_atual: dict = Depends(obter_usuario_atual)
+    usuario_atual: dict = Depends(obter_usuario_atual),
+    db = Depends(get_db)
 ):
+    colecao_usuarios = db["usuarios"]
     senha_criptografada = gerar_hash_senha(dados.nova_senha)
     
     resultado = colecao_usuarios.update_one(
         {"cpf": usuario_atual["cpf"]},
         {"$set": {
             "senha_hash": senha_criptografada, 
+            "email": dados.email,
             "primeiro_acesso": False
         }}
     )
