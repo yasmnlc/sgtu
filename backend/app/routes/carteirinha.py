@@ -1,45 +1,50 @@
-from fastapi import APIRouter, HTTPException
+from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import FileResponse
-from pymongo import MongoClient
-from bson import ObjectId
 from reportlab.pdfgen import canvas
+
+from app.security import obter_usuario_atual
+from app.database import get_db
 
 
 router = APIRouter()
+
+
 @router.get("/teste")
 def teste():
-    return {"mensagem": "rota carteirinha funcionando"}
-
-client = MongoClient("mongodb://localhost:27017")
-
-db = client["sgtu"]
-
-estudantes = db["alunos"]
+    return {
+        "mensagem": "rota carteirinha funcionando"
+    }
 
 
-@router.get("/gerar-carteirinha/{id_aluno}")
-def gerar_carteirinha(id_aluno: str):
+@router.get("/gerar-carteirinha")
+def gerar_carteirinha(
+    usuario_atual: dict = Depends(obter_usuario_atual),
+    db = Depends(get_db)
+):
 
-    try:
-        estudante = estudantes.find_one({
-            "_id": ObjectId(id_aluno)
-        })
+    cpf = usuario_atual["cpf"]
 
-    except:
-        raise HTTPException(
-            status_code=400,
-            detail="ID inválido"
-        )
+
+    estudante = db["estudantes"].find_one({
+        "cpf": cpf
+    })
 
 
     if not estudante:
         raise HTTPException(
             status_code=404,
-            detail="Aluno não encontrado"
+            detail="Cadastro de estudante não encontrado."
         )
 
 
-    arquivo = "carteirinha.pdf"
+    if estudante["status"] != "Autorizado":
+        raise HTTPException(
+            status_code=403,
+            detail="Sua matrícula ainda não foi aprovada."
+        )
+
+
+    arquivo = f"carteirinha_{cpf}.pdf"
 
 
     pdf = canvas.Canvas(arquivo)
