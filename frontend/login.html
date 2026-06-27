@@ -49,10 +49,11 @@
             </div>
 
             <div>
-                <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">CPF ou Usuário</label>
+                <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1.5">CPF</label>
                 <div class="relative">
                     <i class="fa-solid fa-id-card absolute left-3 top-3.5 text-gray-400 text-sm"></i>
                     <input type="text" id="login-identificacao" placeholder="Apenas números" required 
+                        maxlength="11" oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                         class="w-full pl-10 pr-4 py-2.5 rounded-xl border border-gray-300 text-sm focus:outline-none focus:border-sgtu-dark text-slate-800 bg-white">
                 </div>
             </div>
@@ -102,6 +103,7 @@
             <div>
                 <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">CPF</label>
                 <input type="text" id="reg-cpf" placeholder="Apenas números" required 
+                    maxlength="11" oninput="this.value = this.value.replace(/[^0-9]/g, '')"
                     class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-sm focus:outline-none focus:border-sgtu-dark bg-white text-slate-800">
             </div>
 
@@ -221,13 +223,16 @@
 
                 if (response.ok) {
                     localStorage.setItem('sgtu_token', data.token_acesso);
-                    localStorage.setItem('sgtu_perfil_logado', data.perfil);
-                    localStorage.setItem('sgtu_usuario_nome', data.nome);
                     
                     if (data.primeiro_acesso === true) {
+                        sessionStorage.setItem('temp_perfil', data.perfil);
+                        sessionStorage.setItem('temp_nome', data.nome);
+                        
                         document.getElementById('form-login').classList.add('hidden');
                         document.getElementById('form-trocar-senha').classList.remove('hidden');
                     } else {
+                        localStorage.setItem('sgtu_perfil_logado', data.perfil);
+                        localStorage.setItem('sgtu_usuario_nome', data.nome);
                         window.location.href = 'index.html';
                     }
                 } else {
@@ -256,6 +261,13 @@
 
                 if (response.ok) {
                     alert("Senha atualizada com sucesso! Bem-vindo ao SGTU.");
+                    
+                    localStorage.setItem('sgtu_perfil_logado', sessionStorage.getItem('temp_perfil'));
+                    localStorage.setItem('sgtu_usuario_nome', sessionStorage.getItem('temp_nome'));
+
+                    sessionStorage.removeItem('temp_perfil');
+                    sessionStorage.removeItem('temp_nome');
+                    
                     window.location.href = 'index.html';
                 } else {
                     alert("Erro ao atualizar a senha. Tente novamente.");
