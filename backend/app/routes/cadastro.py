@@ -6,7 +6,7 @@ from pydantic import BaseModel
 from fastapi import APIRouter, UploadFile, File, Form, Depends, HTTPException, status
 from pymongo.errors import DuplicateKeyError
 
-from app.security import obter_usuario_atual
+from ..security import obter_usuario_atual
 from ..database import get_db
 
 

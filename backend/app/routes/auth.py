@@ -1,5 +1,5 @@
 from fastapi import APIRouter, HTTPException, status
-from app.models.usuario import UsuarioCriar, UsuarioLogin, UsuarioNoBanco
+from ..models.usuario import UsuarioCriar, UsuarioLogin, UsuarioNoBanco
 from app.database import colecao_usuarios
 from app.security import gerar_hash_senha, verificar_senha, criar_token_acesso
 
