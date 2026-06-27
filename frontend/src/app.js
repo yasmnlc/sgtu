@@ -425,8 +425,46 @@ modalSolicitacoes?.addEventListener('click', (e) => {
     }
 });
 
-document.getElementById('btn-opcao-1')?.addEventListener('click', () => {
-    alert('Solicitar Carteirinha');
+document.getElementById('btn-opcao-1')?.addEventListener('click', async () => {
+
+    const token = localStorage.getItem('sgtu_token');
+
+    if (!token) {
+        alert("Você precisa fazer login.");
+        return;
+    }
+
+    try {
+
+        const response = await fetch(
+            `${API_BASE_URL}/gerar-carteirinha`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+        );
+
+        if (!response.ok) {
+            const erro = await response.json();
+            alert(erro.detail);
+            return;
+        }
+
+        const blob = await response.blob();
+
+        const url = window.URL.createObjectURL(blob);
+
+        window.open(url);
+
+    } catch (erro) {
+
+        console.error(erro);
+
+        alert("Erro ao gerar a carteirinha.");
+
+    }
+
 });
 
 document.getElementById('btn-opcao-2')?.addEventListener('click', () => {
