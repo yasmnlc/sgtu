@@ -1,9 +1,15 @@
+from fastapi import Depends
+from app.security import obter_usuario_atual
+from pydantic import BaseModel
 from fastapi import APIRouter, HTTPException, status
 from ..models.usuario import UsuarioCriar, UsuarioLogin, UsuarioNoBanco
 from app.database import colecao_usuarios
 from app.security import gerar_hash_senha, verificar_senha, criar_token_acesso
 
 router = APIRouter()
+
+class NovaSenha(BaseModel):
+    nova_senha: str
 
 @router.post("/cadastrar", status_code=status.HTTP_201_CREATED)
 async def cadastrar_usuario(usuario: UsuarioCriar):
@@ -39,3 +45,23 @@ async def login(credenciais: UsuarioLogin):
         "primeiro_acesso": usuario_db["primeiro_acesso"],
         "nome": usuario_db["nome_completo"]
     }
+
+@router.patch("/atualizar-senha")
+async def atualizar_senha_primeiro_acesso(
+    dados: NovaSenha,
+    usuario_atual: dict = Depends(obter_usuario_atual)
+):
+    senha_criptografada = gerar_hash_senha(dados.nova_senha)
+    
+    resultado = colecao_usuarios.update_one(
+        {"cpf": usuario_atual["cpf"]},
+        {"$set": {
+            "senha_hash": senha_criptografada, 
+            "primeiro_acesso": False
+        }}
+    )
+    
+    if resultado.modified_count == 0:
+        raise HTTPException(status_code=400, detail="Não foi possível atualizar a senha.")
+        
+    return {"mensagem": "Senha atualizada com sucesso!"}

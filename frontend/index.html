@@ -203,6 +203,9 @@
                 <button id="btn-sec-cadastrados" class="w-full flex items-center space-x-3 p-3 rounded-xl text-sm font-medium opacity-60 hover:opacity-100 transition-all">
                     <i class="fa-solid fa-users text-lg"></i> <span>Estudantes Cadastrados</span>
                 </button>
+                <button id="btn-sec-motoristas" class="w-full flex items-center space-x-3 p-3 rounded-xl text-sm font-medium opacity-60 hover:opacity-100 transition-all">
+                    <i class="fa-solid fa-id-card text-lg"></i> <span>Gestão de Motoristas</span>
+                </button>
             </nav>
 
             <div class="pt-6 border-t border-blue-900 mt-auto">
@@ -293,6 +296,38 @@
                             </tbody>
                     </table>
                 </div>
+            </div>
+
+            <div id="sub-view-motoristas" class="space-y-6 hidden">
+                <div>
+                    <h3 class="text-2xl font-bold text-gray-800">Cadastrar Novo Motorista</h3>
+                    <p class="text-xs text-gray-400 mt-0.5">Gere o acesso para os motoristas da frota municipal. Eles deverão trocar a senha no primeiro acesso.</p>
+                </div>
+
+                <form id="form-cadastro-motorista" class="bg-white border border-gray-200 rounded-xl p-6 shadow-sm max-w-xl space-y-4">
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Nome do Motorista</label>
+                        <input type="text" id="mot-nome" placeholder="Ex: João Roberto" required 
+                            class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-sm focus:outline-none focus:border-blue-900 bg-gray-50">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">CPF (Login)</label>
+                        <input type="text" id="mot-cpf" placeholder="Apenas números" required 
+                            class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-sm focus:outline-none focus:border-blue-900 bg-gray-50">
+                    </div>
+
+                    <div>
+                        <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Senha Provisória</label>
+                        <input type="text" id="mot-senha" value="Muda@123" required 
+                            class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-sm focus:outline-none focus:border-blue-900 bg-amber-50 text-amber-800 font-semibold">
+                        <p class="text-[10px] text-gray-400 mt-1">Esta senha deverá ser informada ao motorista.</p>
+                    </div>
+
+                    <button type="submit" class="w-full bg-blue-900 text-white font-bold py-3.5 rounded-xl shadow-md hover:bg-blue-800 transition-all text-sm tracking-wide mt-2">
+                        Criar Acesso do Motorista
+                    </button>
+                </form>
             </div>
 
         </div>

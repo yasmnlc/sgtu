@@ -39,32 +39,26 @@ navButtons.estudante.addEventListener('click', () => switchView('estudante'));
 navButtons.motorista.addEventListener('click', () => switchView('motorista'));
 navButtons.secretaria.addEventListener('click', () => switchView('secretaria'));
 
-const btnVisaoGeral = document.getElementById('btn-sec-visao-geral');
-const btnValidacao = document.getElementById('btn-sec-validacao');
-const subViewVisaoGeral = document.getElementById('sub-view-visao-geral');
-const subViewValidacao = document.getElementById('sub-view-validacao');
+const abasSecretaria = [
+    { btn: document.getElementById('btn-sec-visao-geral'), view: document.getElementById('sub-view-visao-geral'), acao: carregarDadosDashboard },
+    { btn: document.getElementById('btn-sec-validacao'), view: document.getElementById('sub-view-validacao'), acao: carregarPendenciasSecretaria },
+    { btn: document.getElementById('btn-sec-motoristas'), view: document.getElementById('sub-view-motoristas'), acao: null }
+];
 
-if (btnVisaoGeral && btnValidacao) {
-    btnVisaoGeral.addEventListener('click', () => {
-        subViewVisaoGeral.classList.remove('hidden');
-        subViewValidacao.classList.add('hidden');
+abasSecretaria.forEach(aba => {
+    if (!aba.btn) return;
+    aba.btn.addEventListener('click', () => {
+        abasSecretaria.forEach(a => {
+            a.view?.classList.add('hidden');
+            a.btn.className = "w-full flex items-center space-x-3 p-3 rounded-xl text-sm font-medium opacity-60 hover:opacity-100 transition-all";
+        });
         
-        btnVisaoGeral.className = "w-full flex items-center space-x-3 p-3 rounded-xl text-sm font-medium bg-blue-900 border-l-4 border-green-500 transition-all";
-        btnValidacao.className = "w-full flex items-center space-x-3 p-3 rounded-xl text-sm font-medium opacity-60 hover:opacity-100 transition-all";
+        aba.view.classList.remove('hidden');
+        aba.btn.className = "w-full flex items-center space-x-3 p-3 rounded-xl text-sm font-medium bg-blue-900 border-l-4 border-green-500 transition-all";
         
-        carregarDadosDashboard();
+        if (aba.acao) aba.acao();
     });
-
-    btnValidacao.addEventListener('click', () => {
-        subViewVisaoGeral.classList.add('hidden');
-        subViewValidacao.classList.remove('hidden');
-        
-        btnValidacao.className = "w-full flex items-center space-x-3 p-3 rounded-xl text-sm font-medium bg-blue-900 border-l-4 border-green-500 transition-all";
-        btnVisaoGeral.className = "w-full flex items-center space-x-3 p-3 rounded-xl text-sm font-medium opacity-60 hover:opacity-100 transition-all";
-        
-        carregarPendenciasSecretaria();
-    });
-}
+});
 
 const inputArquivo = document.getElementById('arquivo');
 const previewNomeArquivo = document.getElementById('file-name-preview');
@@ -438,3 +432,40 @@ document.getElementById('btn-opcao-1')?.addEventListener('click', () => {
 document.getElementById('btn-opcao-2')?.addEventListener('click', () => {
     alert('Solicitar Revisão');
 });
+
+const formMotorista = document.getElementById('form-cadastro-motorista');
+if (formMotorista) {
+    formMotorista.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const nome = document.getElementById('mot-nome').value;
+        const cpf = document.getElementById('mot-cpf').value;
+        const senha = document.getElementById('mot-senha').value;
+        
+        try {
+            const response = await fetch(`${API_BASE_URL}/cadastrar`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    nome_completo: nome,
+                    cpf: cpf,
+                    senha: senha,
+                    perfil: "motorista" // 💡 Informamos que é um motorista!
+                })
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                alert(`Sucesso! O acesso do motorista ${nome} foi criado.\nEle deve entrar com o CPF e a senha provisória.`);
+                formMotorista.reset();
+                document.getElementById('mot-senha').value = "Muda@123"; // Reseta a senha padrão
+            } else {
+                alert(`Atenção: ${data.detail || 'Não foi possível cadastrar.'}`);
+            }
+        } catch (error) {
+            console.error("Erro na requisição:", error);
+            alert("Erro ao conectar com o servidor.");
+        }
+    });
+}
