@@ -467,8 +467,16 @@ document.getElementById('btn-opcao-1')?.addEventListener('click', async () => {
 
 });
 
+const botao = document.getElementById("btn-opcao-2");
+console.log(botao);
+
+botao.addEventListener("click", () => {
+    console.log("CLICOU!");
+    alert("Funcionou");
+});
+
 document.getElementById('btn-opcao-2')?.addEventListener('click', () => {
-    alert('Solicitar Revisão');
+    //alert('Solicitar Revisão');
 });
 
 const formMotorista = document.getElementById('form-cadastro-motorista');
@@ -507,3 +515,89 @@ if (formMotorista) {
         }
     });
 }
+
+const btnStatusOnibus = document.getElementById('btn-status-onibus');
+
+const modalStatusOnibus = document.getElementById("modal-status-onibus");
+
+document.getElementById('btn-opcao-2')?.addEventListener('click', () => {
+
+    // Fecha o modal de Solicitações
+    modalSolicitacoes.classList.add('hidden');
+    modalSolicitacoes.classList.remove('flex');
+
+    // Abre o modal Status do Ônibus
+    modalStatusOnibus.classList.remove('hidden');
+    modalStatusOnibus.classList.add('flex');
+
+});
+
+modalStatusOnibus?.addEventListener('click', (e) => {
+
+    if (e.target === modalStatusOnibus) {
+        modalStatusOnibus.classList.add('hidden');
+        modalStatusOnibus.classList.remove('flex');
+    }
+
+});
+
+document.getElementById('fechar-status-onibus')?.addEventListener('click', () => {
+
+    modalStatusOnibus.classList.add('hidden');
+    modalStatusOnibus.classList.remove('flex');
+
+});
+
+const modalLotacao = document.getElementById("modal-lotacao");
+
+document.getElementById("btn-lotacao")?.addEventListener("click", () => {
+
+    modalStatusOnibus.classList.add("hidden");
+    modalStatusOnibus.classList.remove("flex");
+
+    atualizarModalLotacao();
+
+    modalLotacao.classList.remove("hidden");
+    modalLotacao.classList.add("flex");
+
+});
+
+function atualizarModalLotacao() {
+
+    const total = document.querySelectorAll(".btn-embarque").length;
+
+    const embarcados = document.querySelectorAll(".btn-embarque.embarcado").length;
+
+    const vagas = total - embarcados;
+
+    document.getElementById("texto-lotacao").innerText =
+        `${embarcados} / ${total}`;
+
+    document.getElementById("embarcados").innerText =
+        embarcados;
+
+    document.getElementById("vagas").innerText =
+        vagas;
+
+    document.getElementById("barra-lotacao").style.width =
+        `${(embarcados/total)*100}%`;
+
+}
+
+document.getElementById("fechar-lotacao")?.addEventListener("click", () => {
+
+    modalLotacao.classList.add("hidden");
+    modalLotacao.classList.remove("flex");
+
+});
+
+modalLotacao?.addEventListener("click", (e) => {
+
+    if (e.target === modalLotacao) {
+
+        modalLotacao.classList.add("hidden");
+        modalLotacao.classList.remove("flex");
+
+    }
+
+});
