@@ -249,6 +249,11 @@
             id="data-inquerito"
             class="w-full border rounded-lg p-3 mt-2">
 
+        <!-- Informação do dia -->
+        <div id="info-feriado"
+            class="hidden mt-4 bg-yellow-100 border border-yellow-300 rounded-xl p-4">
+        </div>
+
         <div id="area-resposta"
             class="hidden mt-6">
 
@@ -261,30 +266,24 @@
                 <button
                     id="btn-vou"
                     class="flex-1 bg-green-600 text-white py-4 px-6 rounded-xl font-semibold hover:bg-green-700 transition">
-                    
                     ✅ Vou utilizar
-                    
                 </button>
 
                 <button
                     id="btn-nao-vou"
                     class="flex-1 bg-red-600 text-white py-4 px-6 rounded-xl font-semibold hover:bg-red-700 transition">
-                    
                     ❌ Não vou utilizar
-                    
                 </button>
-            </div>
 
+            </div>
 
             <p id="mensagem-voto"
                 class="hidden text-center mt-6 text-green-700 font-semibold text-lg">
             </p>
-        </div>
-    </div>
 
-        <div id="info-feriado"
-            class="hidden mt-4 bg-yellow-100 border border-yellow-300 rounded-xl p-4">
         </div>
+
+    </div>
 
 </div>
 
@@ -381,6 +380,11 @@
                     class="w-full flex items-center space-x-3 p-3 rounded-xl text-sm font-medium opacity-60 hover:opacity-100 transition-all">
                         <i class="fa-solid fa-calendar"></i>
                         <span>Calendário Ônibus</span>
+                </button>
+                <button id="btn-sec-calendario"
+                    class="w-full flex items-center space-x-3 p-3 rounded-xl text-sm font-medium opacity-60 hover:opacity-100 transition-all">
+                    <i class="fa-solid fa-calendar-days text-lg"></i>
+                    <span>Calendário de Transporte</span>
                 </button>
             </nav>
 
@@ -511,74 +515,125 @@
 
                 <div>
                     <h3 class="text-2xl font-bold text-gray-800">
-                    Calendário de Operação
+                        Calendário de Transporte
                     </h3>
 
-                    <p class="text-xs text-gray-400">
-                    Configure feriados e dias especiais.
-                    </p>
+                <p class="text-xs text-gray-400 mt-1">
+                    Cadastre feriados, recessos e acompanhe o interesse dos estudantes.
+                </p>
                 </div>
 
-                <div class="bg-white rounded-xl shadow-sm border p-6">
+                <div class="bg-white rounded-xl border shadow-sm p-6">
 
-                <label class="font-semibold text-sm">
-                Escolha a data
-                </label>
-
-                <input
-                type="date"
-                id="data-calendario"
-                class="border rounded-xl p-3 w-full mt-2">
-
-                <div class="mt-5">
-
-                    <label class="font-semibold text-sm">
-                        Tipo do dia
+                    <label class="block text-sm font-semibold mb-2">
+                        Escolha uma data
                     </label>
 
-                    <select
-                    id="tipo-dia"
-                    class="border rounded-xl p-3 w-full mt-2">
+                    <input
+                        id="data-calendario"
+                        type="date"
+                        class="w-full border rounded-xl p-3">
 
-                    <option value="">
-                    Selecione
-                    </option>
-
-                    <option>
-                    Feriado
-                    </option>
-
-                    <option>
-                    Ponto Facultativo
-                    </option>
-
-                    <option>
-                    Imprensado
-                    </option>
-
-                    </select>
-                </div>
-
-                <button
-                id="btn-salvar-dia"
-                class="mt-5 bg-green-600 text-white px-6 py-3 rounded-xl">
-
-                Salvar Dia Especial
-
-                </button>
-
-                </div>
-
-                <div
-                    id="lista-dias-especiais"
-                    class="bg-white rounded-xl border p-6">
-
-                    <h4 class="font-bold mb-4">
-                    Dias configurados
+                    <h4 class="font-bold mt-6 mb-3">
+                        Tipo do dia
                     </h4>
+
+                    <div class="space-y-3">
+
+                        <label class="flex items-center gap-2">
+                            <input type="radio" name="tipo-dia" value="normal" checked>
+                            Dia normal
+                        </label>
+
+                        <label class="flex items-center gap-2">
+                            <input type="radio" name="tipo-dia" value="feriado">
+                            Feriado
+                        </label>
+
+                        <label class="flex items-center gap-2">
+                            <input type="radio" name="tipo-dia" value="facultativo">
+                            Ponto Facultativo
+                        </label>
+
+                        <label class="flex items-center gap-2">
+                            <input type="radio" name="tipo-dia" value="recesso">
+                            Recesso
+                        </label>
+
+                        <label class="flex items-center gap-2">
+                            <input type="radio" name="tipo-dia" value="imprensado">
+                            Imprensado
+                        </label>
+
+                    </div>
+
+                    <button
+                        id="btn-salvar-dia"
+                        class="mt-6 bg-sgtu-dark text-white px-6 py-3 rounded-xl hover:opacity-90">
+
+                        Salvar Alterações
+
+                    </button>
+
+                </div>
+
+                <div class="bg-white rounded-xl border shadow-sm p-6">
+
+                    <h4 class="text-lg font-bold mb-5">
+                        Resumo do Inquérito
+                    </h4>
+
+                    <div class="grid grid-cols-2 gap-4">
+
+                        <div class="bg-green-50 rounded-xl p-5 border">
+
+                            <p class="text-sm text-gray-500">
+                                Vou utilizar
+                            </p>
+
+                            <p
+                                id="total-vou"
+                                class="text-3xl font-bold text-green-600">
+
+                                0
+
+                            </p>
+
+                        </div>
+
+                    <div class="bg-red-50 rounded-xl p-5 border">
+
+                        <p class="text-sm text-gray-500">
+                            Não vou utilizar
+                        </p>
+
+                        <p
+                            id="total-nao-vou"
+                            class="text-3xl font-bold text-red-600">
+
+                            0
+
+                        </p>
+
+                    </div>
+                </div>
+
+                <div class="mt-6 p-4 rounded-xl bg-gray-100">
+
+                    <span class="font-semibold">
+                        Status da rota:
+                    </span>
+
+                    <span
+                        id="status-rota"
+                        class="text-red-600 font-bold">
+
+                        🔴 Rota Cancelada
+
+                    </span>
+
                 </div>
             </div>
-
         </div>
     </section>
 

@@ -46,6 +46,11 @@ const abasSecretaria = [
     { btn: document.getElementById('btn-sec-calendario'),
         view: document.getElementById('sub-view-calendario'),
         acao: carregarCalendario
+    },
+    {
+    btn: document.getElementById('btn-sec-calendario'),
+    view: document.getElementById('sub-view-calendario'),
+    acao: null
     }
 ];
 
@@ -842,5 +847,79 @@ alert("Dia configurado com sucesso");
 
 carregarCalendario();
 
+
+});
+
+
+document
+    .getElementById("btn-salvar-dia")
+    ?.addEventListener("click", () => {
+
+        const data =
+            document.getElementById("data-calendario").value;
+
+        const tipo =
+            document.querySelector(
+                'input[name="tipo-dia"]:checked'
+            ).value;
+
+        alert(
+            `Data: ${data}\nTipo: ${tipo}\n\nDia especial salvo!`
+        );
+
+});
+
+
+const inputDataInquerito = document.getElementById("data-inquerito");
+
+inputDataInquerito?.addEventListener("change", async () => {
+
+    const data = inputDataInquerito.value;
+
+    if (!data) return;
+
+    const token = localStorage.getItem("sgtu_token");
+
+    try {
+
+        const response = await fetch(
+            `${API_BASE_URL}/secretaria/dias-especiais`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+        );
+
+        const dias = await response.json();
+
+        const diaEspecial = dias.find(d => d.data === data);
+
+        const areaResposta = document.getElementById("area-resposta");
+        const infoFeriado = document.getElementById("info-feriado");
+
+        if (diaEspecial) {
+
+            areaResposta.classList.remove("hidden");
+
+            infoFeriado.classList.remove("hidden");
+
+            infoFeriado.innerHTML = `
+                <strong>${diaEspecial.titulo}</strong><br>
+                ${diaEspecial.descricao}
+            `;
+
+        } else {
+
+            areaResposta.classList.add("hidden");
+            infoFeriado.classList.add("hidden");
+
+        }
+
+    } catch (erro) {
+
+        console.error(erro);
+
+    }
 
 });
