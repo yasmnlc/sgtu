@@ -9,3 +9,4 @@ backend/app/uploads/
 __pycache__/
 .venv/
 env/
+node_modules/

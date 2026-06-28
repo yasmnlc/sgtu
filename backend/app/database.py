@@ -7,7 +7,7 @@ load_dotenv()
 MONGO_URI = os.getenv("MONGO_URI")
 
 client = MongoClient(MONGO_URI)
-db = client.get_database()
+db = client["sgtu_db"]
 
 colecao_estudantes = db["estudantes"]
 colecao_usuarios = db["usuarios"]
