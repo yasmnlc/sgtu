@@ -42,7 +42,11 @@ navButtons.secretaria.addEventListener('click', () => switchView('secretaria'));
 const abasSecretaria = [
     { btn: document.getElementById('btn-sec-visao-geral'), view: document.getElementById('sub-view-visao-geral'), acao: carregarDadosDashboard },
     { btn: document.getElementById('btn-sec-validacao'), view: document.getElementById('sub-view-validacao'), acao: carregarPendenciasSecretaria },
-    { btn: document.getElementById('btn-sec-motoristas'), view: document.getElementById('sub-view-motoristas'), acao: null }
+    { btn: document.getElementById('btn-sec-motoristas'), view: document.getElementById('sub-view-motoristas'), acao: null },
+    { btn: document.getElementById('btn-sec-calendario'),
+        view: document.getElementById('sub-view-calendario'),
+        acao: carregarCalendario
+    }
 ];
 
 abasSecretaria.forEach(aba => {
@@ -470,11 +474,6 @@ document.getElementById('btn-opcao-1')?.addEventListener('click', async () => {
 const botao = document.getElementById("btn-opcao-2");
 console.log(botao);
 
-botao.addEventListener("click", () => {
-    console.log("CLICOU!");
-    alert("Funcionou");
-});
-
 document.getElementById('btn-opcao-2')?.addEventListener('click', () => {
     //alert('Solicitar Revisão');
 });
@@ -599,5 +598,249 @@ modalLotacao?.addEventListener("click", (e) => {
         modalLotacao.classList.remove("flex");
 
     }
+
+});
+
+const modalInquerito = document.getElementById("modal-inquerito");
+
+document.getElementById('btn-inquerito')
+?.addEventListener('click',()=>{
+
+
+    modalStatusOnibus.classList.add('hidden');
+    modalStatusOnibus.classList.remove('flex');
+
+
+    modalInquerito.classList.remove('hidden');
+    modalInquerito.classList.add('flex');
+
+
+});
+
+document.getElementById("data-inquerito")
+?.addEventListener("change",(e)=>{
+
+
+    const data = e.target.value;
+
+
+    const info = document.getElementById("info-feriado");
+
+
+    if(feriados[data]){
+
+
+        info.innerHTML = `
+        
+        📅 <b>${data}</b><br>
+        ${feriados[data]}
+
+        `;
+
+
+        info.classList.remove("hidden");
+
+
+    }else{
+
+
+        info.innerHTML = `
+        
+        Dia normal.
+        O ônibus segue a operação padrão.
+
+        `;
+
+
+        info.classList.remove("hidden");
+
+
+    }
+
+
+    document
+    .getElementById("area-resposta")
+    .classList.remove("hidden");
+
+
+});
+
+document.getElementById("fechar-inquerito")
+?.addEventListener("click",()=>{
+
+
+    modalInquerito.classList.add("hidden");
+    modalInquerito.classList.remove("flex");
+
+
+});
+
+const feriados = {
+
+    "2026-01-01": "Ano Novo",
+
+    "2026-04-03": "Paixão de Cristo",
+
+    "2026-04-21": "Tiradentes",
+
+    "2026-05-01": "Dia do Trabalho",
+
+    "2026-09-07": "Independência do Brasil",
+
+    "2026-10-12": "Nossa Senhora Aparecida",
+
+    "2026-11-02": "Finados",
+
+    "2026-11-15": "Proclamação da República",
+
+    "2026-12-25": "Natal"
+
+};
+
+document.getElementById("btn-vou")
+?.addEventListener("click",()=>{
+
+
+registrarVoto("vai");
+
+
+});
+
+document.getElementById("btn-nao-vou")
+?.addEventListener("click",()=>{
+
+
+registrarVoto("nao_vai");
+
+
+});
+
+function registrarVoto(resposta){
+
+
+const data =
+document.getElementById("data-inquerito").value;
+
+
+
+console.log({
+
+data:data,
+
+resposta:resposta
+
+});
+
+
+
+const mensagem =
+document.getElementById("mensagem-voto");
+
+
+
+mensagem.innerText =
+"✅ Resposta registrada! Obrigado pela participação.";
+
+
+mensagem.classList.remove("hidden");
+
+
+}
+
+let diasEspeciais = [];
+
+
+function carregarCalendario(){
+
+const lista =
+document.getElementById("lista-dias-especiais");
+
+
+lista.innerHTML = `
+<h4 class="font-bold mb-4">
+Dias configurados
+</h4>
+`;
+
+
+
+diasEspeciais.forEach(dia=>{
+
+
+lista.innerHTML += `
+
+<div class="border rounded-xl p-4 mb-3 flex justify-between">
+
+
+<div>
+
+<p class="font-bold">
+${dia.data}
+</p>
+
+<p class="text-sm text-gray-500">
+${dia.tipo}
+</p>
+
+</div>
+
+
+<span class="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-xs">
+
+Ativo
+
+</span>
+
+
+</div>
+
+
+`;
+
+
+});
+
+
+}
+
+document
+.getElementById("btn-salvar-dia")
+?.addEventListener("click",()=>{
+
+
+const data =
+document.getElementById("data-calendario").value;
+
+
+const tipo =
+document.getElementById("tipo-dia").value;
+
+
+
+if(!data || !tipo){
+
+alert("Preencha todos os campos");
+
+return;
+
+}
+
+
+
+diasEspeciais.push({
+
+data:data,
+
+tipo:tipo
+
+});
+
+
+
+alert("Dia configurado com sucesso");
+
+
+carregarCalendario();
+
 
 });

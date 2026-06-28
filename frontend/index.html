@@ -221,6 +221,73 @@
 
     </div>
 
+    <div id="modal-inquerito"
+    class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+
+    <div class="bg-white rounded-2xl p-8 w-[450px] relative shadow-xl">
+
+        <button
+            id="fechar-inquerito"
+            class="absolute top-3 right-4 text-2xl text-gray-500 hover:text-red-500">
+            ✕
+        </button>
+
+        <h2 class="text-2xl font-bold mb-4">
+            📅 Inquérito do Ônibus
+        </h2>
+
+        <p class="text-sm text-gray-500 mb-5">
+            Consulte os dias especiais e informe se irá utilizar o transporte.
+        </p>
+
+        <label class="font-semibold text-sm">
+            Escolha a data:
+        </label>
+
+        <input
+            type="date"
+            id="data-inquerito"
+            class="w-full border rounded-lg p-3 mt-2">
+
+        <div id="area-resposta"
+            class="hidden mt-6">
+
+            <p class="font-semibold mb-3">
+                Você vai para a faculdade?
+            </p>
+
+            <div class="flex gap-4 mt-4">
+
+                <button
+                    id="btn-vou"
+                    class="flex-1 bg-green-600 text-white py-4 px-6 rounded-xl font-semibold hover:bg-green-700 transition">
+                    
+                    ✅ Vou utilizar
+                    
+                </button>
+
+                <button
+                    id="btn-nao-vou"
+                    class="flex-1 bg-red-600 text-white py-4 px-6 rounded-xl font-semibold hover:bg-red-700 transition">
+                    
+                    ❌ Não vou utilizar
+                    
+                </button>
+            </div>
+
+
+            <p id="mensagem-voto"
+                class="hidden text-center mt-6 text-green-700 font-semibold text-lg">
+            </p>
+        </div>
+    </div>
+
+        <div id="info-feriado"
+            class="hidden mt-4 bg-yellow-100 border border-yellow-300 rounded-xl p-4">
+        </div>
+
+</div>
+
     <section id="view-motorista" class="w-full max-w-6xl mx-auto my-8 bg-white shadow-xl rounded-2xl overflow-hidden min-h-[80vh] flex flex-col hidden">
         <div class="bg-sgtu-dark text-white p-6 flex flex-col md:flex-row justify-between items-start md:items-center px-8 border-b border-blue-950">
             <div>
@@ -309,6 +376,11 @@
                 </button>
                 <button id="btn-sec-motoristas" class="w-full flex items-center space-x-3 p-3 rounded-xl text-sm font-medium opacity-60 hover:opacity-100 transition-all">
                     <i class="fa-solid fa-id-card text-lg"></i> <span>Gestão de Motoristas</span>
+                </button>
+                <button id="btn-sec-calendario"
+                    class="w-full flex items-center space-x-3 p-3 rounded-xl text-sm font-medium opacity-60 hover:opacity-100 transition-all">
+                        <i class="fa-solid fa-calendar"></i>
+                        <span>Calendário Ônibus</span>
                 </button>
             </nav>
 
@@ -433,6 +505,78 @@
                         Criar Acesso do Motorista
                     </button>
                 </form>
+            </div>
+
+            <div id="sub-view-calendario" class="space-y-6 hidden">
+
+                <div>
+                    <h3 class="text-2xl font-bold text-gray-800">
+                    Calendário de Operação
+                    </h3>
+
+                    <p class="text-xs text-gray-400">
+                    Configure feriados e dias especiais.
+                    </p>
+                </div>
+
+                <div class="bg-white rounded-xl shadow-sm border p-6">
+
+                <label class="font-semibold text-sm">
+                Escolha a data
+                </label>
+
+                <input
+                type="date"
+                id="data-calendario"
+                class="border rounded-xl p-3 w-full mt-2">
+
+                <div class="mt-5">
+
+                    <label class="font-semibold text-sm">
+                        Tipo do dia
+                    </label>
+
+                    <select
+                    id="tipo-dia"
+                    class="border rounded-xl p-3 w-full mt-2">
+
+                    <option value="">
+                    Selecione
+                    </option>
+
+                    <option>
+                    Feriado
+                    </option>
+
+                    <option>
+                    Ponto Facultativo
+                    </option>
+
+                    <option>
+                    Imprensado
+                    </option>
+
+                    </select>
+                </div>
+
+                <button
+                id="btn-salvar-dia"
+                class="mt-5 bg-green-600 text-white px-6 py-3 rounded-xl">
+
+                Salvar Dia Especial
+
+                </button>
+
+                </div>
+
+                <div
+                    id="lista-dias-especiais"
+                    class="bg-white rounded-xl border p-6">
+
+                    <h4 class="font-bold mb-4">
+                    Dias configurados
+                    </h4>
+                </div>
             </div>
 
         </div>
