@@ -16,4 +16,7 @@ colecao_estudantes.create_index([("cpf", ASCENDING)], unique=True)
 colecao_usuarios.create_index([("cpf", ASCENDING)], unique=True)
 
 def get_db():
-    return db
+    try:
+        yield db
+    finally:
+        pass

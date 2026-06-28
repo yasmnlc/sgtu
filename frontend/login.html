@@ -152,6 +152,17 @@
                     class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-sm focus:outline-none focus:border-amber-500 bg-white text-slate-800">
             </div>
 
+            <div>
+                <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">E-mail de Recuperação</label>
+                <input type="email" id="nova-email" placeholder="seu@email.com" required
+                    class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-sm focus:outline-none focus:border-amber-500 bg-white text-slate-800">
+            </div>
+            <div>
+                <label class="block text-xs font-bold text-gray-500 uppercase tracking-wider mb-1">Confirmar E-mail</label>
+                <input type="email" id="confirmar-email" placeholder="Confirme seu e-mail" required
+                    class="w-full px-4 py-2.5 rounded-xl border border-gray-300 text-sm focus:outline-none focus:border-amber-500 bg-white text-slate-800">
+            </div>
+
             <button type="submit" class="w-full bg-amber-500 text-white font-bold py-3.5 rounded-xl shadow-lg hover:bg-opacity-95 transition-all text-sm tracking-wide mt-2">
                 Salvar e Entrar
             </button>
@@ -300,6 +311,14 @@
         document.getElementById('form-trocar-senha').addEventListener('submit', async function(e) {
             e.preventDefault();
             const novaSenha = document.getElementById('nova-senha').value;
+            const email = document.getElementById('nova-email').value;
+            const confirmarEmail = document.getElementById('confirmar-email').value;
+
+            if (email !== confirmarEmail) {
+                alert("Os e-mails não coincidem. Por favor, verifique.");
+                return;
+            }
+
             const token = localStorage.getItem('sgtu_token');
             
             try {
@@ -309,25 +328,49 @@
                         'Content-Type': 'application/json',
                         'Authorization': `Bearer ${token}` 
                     },
-                    body: JSON.stringify({ nova_senha: novaSenha })
+                    body: JSON.stringify({ 
+                        nova_senha: novaSenha,
+                        email: email
+                    })
                 });
 
                 if (response.ok) {
-                    alert("Senha atualizada com sucesso! Bem-vindo ao SGTU.");
-                    
+                    alert("Acesso configurado com sucesso!");
                     localStorage.setItem('sgtu_perfil_logado', sessionStorage.getItem('temp_perfil'));
                     localStorage.setItem('sgtu_usuario_nome', sessionStorage.getItem('temp_nome'));
-
                     sessionStorage.removeItem('temp_perfil');
                     sessionStorage.removeItem('temp_nome');
-                    
                     window.location.href = 'index.html';
                 } else {
-                    alert("Erro ao atualizar a senha. Tente novamente.");
+                    const errorData = await response.json();
+                    alert(`Erro: ${errorData.detail}`);
                 }
             } catch (error) {
-                console.error(error);
                 alert("Erro de conexão.");
+            }
+        });
+
+        document.getElementById('form-recuperar-senha').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const cpf = document.getElementById('recuperar-cpf').value;
+            
+            try {
+                const response = await fetch(`${API_BASE_URL}/solicitar-recuperacao`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ cpf: cpf })
+                });
+
+                const data = await response.json();
+                
+                alert(data.mensagem);
+                
+                document.getElementById('form-recuperar-senha').reset();
+                btnVoltarLoginRecuperacao.click();
+                
+            } catch (error) {
+                console.error(error);
+                alert("Erro ao conectar com o servidor.");
             }
         });
     </script> </body>
