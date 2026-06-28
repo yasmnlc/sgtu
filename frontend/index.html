@@ -117,6 +117,110 @@
         </div>
     </section>
 
+    <div id="modal-status-onibus"
+        class="hidden fixed inset-0 bg-black/50 items-center justify-center z-50">
+
+        <div class="bg-white rounded-xl p-8 w-96">
+
+        <button
+        id="fechar-status-onibus"
+        class="absolute top-3 right-4 text-xl hover:text-red-500">
+            ✕
+        </button>
+
+        <h2 class="text-xl font-bold">
+        Status do Ônibus
+        </h2>
+
+        <button id="btn-lotacao"
+        class="bg-blue-600 text-white p-3 rounded-lg w-full mt-5">
+
+        🚌 Lotação do Ônibus
+
+        </button>
+
+
+        <button id="btn-inquerito"
+        class="bg-green-600 text-white p-3 rounded-lg w-full mt-3">
+
+        📅 Inquérito do Ônibus
+
+        </button>
+
+        </div>
+
+    </div>
+
+    <div id="modal-lotacao"
+    class="hidden fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+
+        <div class="bg-white rounded-xl p-8 w-[420px] relative">
+
+            <button
+                id="fechar-lotacao"
+                class="absolute top-3 right-4 text-2xl text-gray-500 hover:text-red-500">
+                ✕
+            </button>
+
+            <h2 class="text-2xl font-bold mb-6">
+                🚌 Lotação do Ônibus
+            </h2>
+
+            <div class="space-y-5">
+
+                <div>
+                    <p class="text-gray-500 text-sm">
+                        Ocupação Atual
+                    </p>
+
+                    <p id="texto-lotacao"
+                    class="text-4xl font-bold text-blue-700">
+                        15 / 40
+                    </p>
+                </div>
+
+                <div class="w-full bg-gray-200 rounded-full h-5">
+
+                    <div
+                        id="barra-lotacao"
+                        class="bg-green-600 h-5 rounded-full"
+                        style="width:37%">
+                    </div>
+
+                </div>
+
+                <div class="grid grid-cols-2 gap-4">
+
+                    <div class="bg-green-100 rounded-xl p-4 text-center">
+                        <p class="text-sm text-gray-600">
+                            Embarcados
+                        </p>
+
+                        <p id="embarcados"
+                        class="text-2xl font-bold text-green-700">
+                            15
+                        </p>
+                    </div>
+
+                    <div class="bg-blue-100 rounded-xl p-4 text-center">
+                        <p class="text-sm text-gray-600">
+                            Vagas
+                        </p>
+
+                        <p id="vagas"
+                        class="text-2xl font-bold text-blue-700">
+                            25
+                        </p>
+                    </div>
+
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
     <section id="view-motorista" class="w-full max-w-6xl mx-auto my-8 bg-white shadow-xl rounded-2xl overflow-hidden min-h-[80vh] flex flex-col hidden">
         <div class="bg-sgtu-dark text-white p-6 flex flex-col md:flex-row justify-between items-start md:items-center px-8 border-b border-blue-950">
             <div>
