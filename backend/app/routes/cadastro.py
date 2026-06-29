@@ -217,3 +217,15 @@ async def listar_todos_estudantes(
             "status": est.get("status", "Pendente")
         })
     return resposta
+
+@router.get("/meu-status")
+async def verificar_meu_status(
+    usuario_atual: dict = Depends(obter_usuario_atual),
+    db = Depends(get_db)
+):
+    estudante = db["estudantes"].find_one({"cpf": usuario_atual["cpf"]})
+    
+    if estudante:
+        return {"status": estudante.get("status", "Pendente")}
+    
+    return {"status": "Não Cadastrado"}

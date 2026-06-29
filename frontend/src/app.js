@@ -19,30 +19,31 @@ function switchView(viewName) {
     });
 
     if (sections[viewName] && navButtons[viewName]) {
-    sections[viewName].classList.remove('hidden');
-    navButtons[viewName].classList.add('btn-active');
+        sections[viewName].classList.remove('hidden');
+        navButtons[viewName].classList.add('btn-active');
 
 
-    if (viewName === 'estudante') {
+        if (viewName === 'estudante') {
+            carregarStatusEstudante();
+        }
 
-        verificarStatusAluno();
+        if (viewName === 'estudante') {
+            verificarStatusAluno();
+        }
 
+
+        if (viewName === 'secretaria') {
+            const btnVisaoGeral = document.getElementById('btn-sec-visao-geral');
+
+            if (btnVisaoGeral) btnVisaoGeral.click();
+
+        } else if (viewName === 'motorista') {
+            carregarListaMotorista().then(() => {
+                atualizarOcupacao();
+            });
+
+        }
     }
-
-
-    if (viewName === 'secretaria') {
-        const btnVisaoGeral = document.getElementById('btn-sec-visao-geral');
-
-        if (btnVisaoGeral) btnVisaoGeral.click();
-
-    } else if (viewName === 'motorista') {
-
-        carregarListaMotorista().then(() => {
-            atualizarOcupacao();
-        });
-
-    }
-}
 }
 
 navButtons.estudante.addEventListener('click', () => switchView('estudante'));
@@ -127,6 +128,8 @@ document.getElementById('form-cadastro').addEventListener('submit', async (e) =>
             alert(`Sucesso: ${result.mensagem}`);
             document.getElementById('form-cadastro').reset();
             previewNomeArquivo.classList.add('hidden');
+
+            carregarStatusEstudante();
         } else {
             alert(`Atenção: ${result.detail || 'Erro ao processar cadastro.'}`);
         }
@@ -421,11 +424,11 @@ async function inicializarSelectUniversidades() {
 }
 
 async function carregarTodosEstudantes() {
-    const tabelaBody = document.getElementById('tabela-todos-estudantes'); // Você precisa ter esse ID no seu HTML
+    const tabelaBody = document.getElementById('tabela-todos-estudantes'); 
     if (!tabelaBody) return;
 
     try {
-        const response = await fetch(`${API_BASE_URL}/estudantes`, { // Certifique-se que essa rota existe no seu backend
+        const response = await fetch(`${API_BASE_URL}/estudantes`, {
             headers: { 'Authorization': `Bearer ${localStorage.getItem('sgtu_token')}` }
         });
         const estudantes = await response.json();
@@ -439,6 +442,36 @@ async function carregarTodosEstudantes() {
         `).join('');
     } catch (e) {
         console.error("Erro ao listar todos:", e);
+    }
+}
+
+async function carregarStatusEstudante() {
+    const token = localStorage.getItem('sgtu_token');
+    const spanStatus = document.getElementById('status-matricula');
+    
+    if (!token || !spanStatus) return;
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/meu-status`, {
+            headers: { 'Authorization': `Bearer ${token}` }
+        });
+        
+        if (response.ok) {
+            const data = await response.json();
+            spanStatus.innerText = data.status;
+
+            if (data.status === 'Autorizado') {
+                spanStatus.className = "inline-block bg-green-100 text-green-700 font-semibold px-4 py-1.5 rounded-full text-xs my-2 border border-green-200";
+            } else if (data.status === 'Recusado') {
+                spanStatus.className = "inline-block bg-red-100 text-red-700 font-semibold px-4 py-1.5 rounded-full text-xs my-2 border border-red-200";
+            } else if (data.status === 'Não Cadastrado') {
+                spanStatus.className = "inline-block bg-gray-100 text-gray-700 font-semibold px-4 py-1.5 rounded-full text-xs my-2 border border-gray-200";
+            } else {
+                spanStatus.className = "inline-block bg-amber-100 text-amber-700 font-semibold px-4 py-1.5 rounded-full text-xs my-2 border border-amber-200";
+            }
+        }
+    } catch (error) {
+        console.error("Erro ao buscar status:", error);
     }
 }
 
