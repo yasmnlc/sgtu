@@ -42,6 +42,7 @@ navButtons.secretaria.addEventListener('click', () => switchView('secretaria'));
 const abasSecretaria = [
     { btn: document.getElementById('btn-sec-visao-geral'), view: document.getElementById('sub-view-visao-geral'), acao: carregarDadosDashboard },
     { btn: document.getElementById('btn-sec-validacao'), view: document.getElementById('sub-view-validacao'), acao: carregarPendenciasSecretaria },
+    { btn: document.getElementById('btn-sec-cadastrados'), view: document.getElementById('sub-view-cadastrados'), acao: carregarTodosEstudantes },
     { btn: document.getElementById('btn-sec-motoristas'), view: document.getElementById('sub-view-motoristas'), acao: null },
     { btn: document.getElementById('btn-sec-calendario'),
         view: document.getElementById('sub-view-calendario'),
@@ -404,6 +405,28 @@ async function inicializarSelectUniversidades() {
     }
 }
 
+async function carregarTodosEstudantes() {
+    const tabelaBody = document.getElementById('tabela-todos-estudantes'); // Você precisa ter esse ID no seu HTML
+    if (!tabelaBody) return;
+
+    try {
+        const response = await fetch(`${API_BASE_URL}/estudantes`, { // Certifique-se que essa rota existe no seu backend
+            headers: { 'Authorization': `Bearer ${localStorage.getItem('sgtu_token')}` }
+        });
+        const estudantes = await response.json();
+        
+        tabelaBody.innerHTML = estudantes.map(aluno => `
+            <tr>
+                <td class="p-4">${aluno.nome_completo}</td>
+                <td class="p-4">${aluno.curso}</td>
+                <td class="p-4">${aluno.status}</td>
+            </tr>
+        `).join('');
+    } catch (e) {
+        console.error("Erro ao listar todos:", e);
+    }
+}
+
 const btnSolicitacoes = document.getElementById('btn-solicitacoes');
 const modalSolicitacoes = document.getElementById('modal-solicitacoes');
 const fecharModal = document.getElementById('fechar-modal');
@@ -479,7 +502,7 @@ if (formMotorista) {
                     nome_completo: nome,
                     cpf: cpf,
                     senha: senha,
-                    perfil: "motorista" // 💡 Informamos que é um motorista!
+                    perfil: "motorista" 
                 })
             });
 
@@ -488,7 +511,7 @@ if (formMotorista) {
             if (response.ok) {
                 alert(`Sucesso! O acesso do motorista ${nome} foi criado.\nEle deve entrar com o CPF e a senha provisória.`);
                 formMotorista.reset();
-                document.getElementById('mot-senha').value = "Muda@123"; // Reseta a senha padrão
+                document.getElementById('mot-senha').value = "Muda@123";
             } else {
                 alert(`Atenção: ${data.detail || 'Não foi possível cadastrar.'}`);
             }

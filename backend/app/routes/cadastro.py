@@ -199,3 +199,21 @@ async def obter_dados_dashboard(
         "autorizados": autorizados,
         "por_universidade": por_universidade
     }
+
+
+@router.get("/estudantes")
+async def listar_todos_estudantes(
+    usuario_atual: dict = Depends(obter_usuario_atual),
+    db = Depends(get_db)
+):
+    colecao = db["estudantes"]
+    estudantes = list(colecao.find({}))
+    
+    resposta = []
+    for est in estudantes:
+        resposta.append({
+            "nome_completo": est.get("nome_completo", "N/A"),
+            "curso": est.get("curso", "N/A"),
+            "status": est.get("status", "Pendente")
+        })
+    return resposta
