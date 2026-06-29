@@ -11,6 +11,10 @@ db = client["sgtu_db"]
 
 colecao_estudantes = db["estudantes"]
 colecao_usuarios = db["usuarios"]
+colecao_inqueritos = db["inqueritos"]
+colecao_votos = db["votos_inquerito"]
+colecao_alunos = db["alunos"]
+dias_especiais = db["dias_especiais"]
 
 colecao_estudantes.create_index([("cpf", ASCENDING)], unique=True)
 colecao_usuarios.create_index([("cpf", ASCENDING)], unique=True)

@@ -19,20 +19,30 @@ function switchView(viewName) {
     });
 
     if (sections[viewName] && navButtons[viewName]) {
-        sections[viewName].classList.remove('hidden');
-        navButtons[viewName].classList.add('btn-active');
+    sections[viewName].classList.remove('hidden');
+    navButtons[viewName].classList.add('btn-active');
 
-        if (viewName === 'secretaria') {
-            const btnVisaoGeral = document.getElementById('btn-sec-visao-geral');
-            if (btnVisaoGeral) btnVisaoGeral.click();
-        } else if (viewName === 'motorista') {
-            carregarListaMotorista().then(() => {
-                atualizarOcupacao();
-            });
-        } else if (viewName === 'visao-geral') {
-            carregarDadosDashboard();
-        }
+
+    if (viewName === 'estudante') {
+
+        verificarStatusAluno();
+
     }
+
+
+    if (viewName === 'secretaria') {
+        const btnVisaoGeral = document.getElementById('btn-sec-visao-geral');
+
+        if (btnVisaoGeral) btnVisaoGeral.click();
+
+    } else if (viewName === 'motorista') {
+
+        carregarListaMotorista().then(() => {
+            atualizarOcupacao();
+        });
+
+    }
+}
 }
 
 navButtons.estudante.addEventListener('click', () => switchView('estudante'));
@@ -47,6 +57,11 @@ const abasSecretaria = [
     { btn: document.getElementById('btn-sec-calendario'),
         view: document.getElementById('sub-view-calendario'),
         acao: carregarCalendario
+    },
+    {
+    btn: document.getElementById('btn-sec-calendario'),
+    view: document.getElementById('sub-view-calendario'),
+    acao: null
     }
 ];
 
@@ -851,3 +866,217 @@ carregarCalendario();
 
 
 });
+
+
+document
+    .getElementById("btn-salvar-dia")
+    ?.addEventListener("click", () => {
+
+        const data =
+            document.getElementById("data-calendario").value;
+
+        const tipo =
+            document.querySelector(
+                'input[name="tipo-dia"]:checked'
+            ).value;
+
+        alert(
+            `Data: ${data}\nTipo: ${tipo}\n\nDia especial salvo!`
+        );
+
+});
+
+
+const inputDataInquerito = document.getElementById("data-inquerito");
+
+inputDataInquerito?.addEventListener("change", async () => {
+
+    const data = inputDataInquerito.value;
+
+    if (!data) return;
+
+    const token = localStorage.getItem("sgtu_token");
+
+    try {
+
+        const response = await fetch(
+            `${API_BASE_URL}/secretaria/dias-especiais`,
+            {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            }
+        );
+
+        const dias = await response.json();
+
+        const diaEspecial = dias.find(d => d.data === data);
+
+        const areaResposta = document.getElementById("area-resposta");
+        const infoFeriado = document.getElementById("info-feriado");
+
+        if (diaEspecial) {
+
+            areaResposta.classList.remove("hidden");
+
+            infoFeriado.classList.remove("hidden");
+
+            infoFeriado.innerHTML = `
+                <strong>${diaEspecial.titulo}</strong><br>
+                ${diaEspecial.descricao}
+            `;
+
+        } else {
+
+            areaResposta.classList.add("hidden");
+            infoFeriado.classList.add("hidden");
+
+        }
+
+    } catch (erro) {
+
+        console.error(erro);
+
+    }
+
+});
+
+async function verificarStatusAluno() {
+
+    const token = localStorage.getItem('sgtu_token');
+
+    if (!token) return;
+
+
+    try {
+
+        const response = await fetch(
+            `${API_BASE_URL}/meu-status`,
+            {
+                headers:{
+                    Authorization:`Bearer ${token}`
+                }
+            }
+        );
+
+
+        if(!response.ok) return;
+
+
+        const aluno = await response.json();
+
+
+        const formulario =
+        document.getElementById('form-cadastro');
+
+
+        const status =
+        document.getElementById('status-matricula');
+
+
+        if(aluno.status === "Autorizado"){
+
+
+            formulario.classList.add("hidden");
+
+
+            status.innerText = "Ativado";
+
+
+            status.className =
+            `
+            inline-block 
+            bg-green-100 
+            text-green-700 
+            font-semibold 
+            px-4 
+            py-1.5 
+            rounded-full 
+            text-xs 
+            my-2 
+            border 
+            border-green-200
+            `;
+
+
+        }
+
+
+    } catch(error){
+
+        console.error(
+            "Erro ao verificar status:",
+            error
+        );
+
+    }
+
+}
+
+async function verificarStatusAluno(){
+
+    const token = localStorage.getItem('sgtu_token');
+
+    if(!token) return;
+
+
+    try{
+
+        const response = await fetch(
+            `${API_BASE_URL}/meu-status`,
+            {
+                headers:{
+                    Authorization:`Bearer ${token}`
+                }
+            }
+        );
+
+
+        const aluno = await response.json();
+
+
+        const formulario =
+        document.getElementById('form-cadastro');
+
+
+        const status =
+        document.getElementById('status-matricula');
+
+
+        if(aluno.status === "Autorizado"){
+
+            formulario.classList.add("hidden");
+
+
+            status.innerText =
+            "Ativado";
+
+
+            status.className =
+            `
+            inline-block
+            bg-green-100
+            text-green-700
+            font-semibold
+            px-4
+            py-1.5
+            rounded-full
+            text-xs
+            my-2
+            border
+            border-green-200
+            `;
+
+        }
+
+
+    }catch(error){
+
+        console.error(
+            "Erro ao buscar status:",
+            error
+        );
+
+    }
+
+}

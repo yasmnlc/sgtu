@@ -2,8 +2,9 @@ import os
 from fastapi import FastAPI
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
+from .routes import secretaria
 
-from .routes import cadastro, auth, carteirinha
+from .routes import cadastro, auth, carteirinha, inquerito
 
 
 app = FastAPI(title="SGTU API", version="1.0")
@@ -23,6 +24,8 @@ app.mount("/arquivos", StaticFiles(directory=UPLOAD_DIR), name="uploads")
 app.include_router(cadastro.router)
 app.include_router(auth.router, tags=["Autenticação"])
 app.include_router(carteirinha.router)
+app.include_router(inquerito.router)
+app.include_router(secretaria.router)
 
 @app.get("/")
 def home():
