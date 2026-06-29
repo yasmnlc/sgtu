@@ -430,24 +430,16 @@ modalSolicitacoes?.addEventListener('click', (e) => {
 });
 
 document.getElementById('btn-opcao-1')?.addEventListener('click', async () => {
-
     const token = localStorage.getItem('sgtu_token');
-
     if (!token) {
         alert("Você precisa fazer login.");
         return;
     }
 
     try {
-
-        const response = await fetch(
-            `${API_BASE_URL}/gerar-carteirinha`,
-            {
-                headers: {
-                    Authorization: `Bearer ${token}`
-                }
-            }
-        );
+        const response = await fetch(`${API_BASE_URL}/gerar-carteirinha?token=${token}`, {
+            method: 'GET' 
+        });
 
         if (!response.ok) {
             const erro = await response.json();
@@ -455,20 +447,12 @@ document.getElementById('btn-opcao-1')?.addEventListener('click', async () => {
             return;
         }
 
-        const blob = await response.blob();
-
-        const url = window.URL.createObjectURL(blob);
-
-        window.open(url);
+        window.open(`${API_BASE_URL}/gerar-carteirinha?token=${token}`, '_blank');
 
     } catch (erro) {
-
         console.error(erro);
-
-        alert("Erro ao gerar a carteirinha.");
-
+        alert("Erro ao conectar com o servidor.");
     }
-
 });
 
 const botao = document.getElementById("btn-opcao-2");
