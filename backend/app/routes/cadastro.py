@@ -83,6 +83,30 @@ async def cadastrar_estudante(
     with open(caminho_arquivo, "wb") as buffer:
         shutil.copyfileobj(arquivo.file, buffer)
 
+    colecao = db["estudantes"]
+    
+    estudante_existente = colecao.find_one({"cpf": cpf_limpo})
+
+    if estudante_existente:
+        if estudante_existente["status"] == "Pendente":
+            raise HTTPException(status_code=400, detail="Seu cadastro já está em análise pela Secretaria.")
+        elif estudante_existente["status"] == "Autorizado":
+            raise HTTPException(status_code=400, detail="Você já possui um cadastro autorizado!")
+        elif estudante_existente["status"] == "Recusado":
+            colecao.update_one(
+                {"cpf": cpf_limpo},
+                {"$set": {
+                    "nome_completo": nome_completo,
+                    "universidade": universidade,
+                    "curso": curso,
+                    "documento_url": caminho_arquivo,
+                    "status": "Pendente",
+                    "data_envio": datetime.now(),
+                    "justificativa_recusa": ""
+                }}
+            )
+            return {"status": "Sucesso", "mensagem": "Documentação reenviada com sucesso!"}
+        
     novo_estudante = {
         "nome_completo": nome_completo,
         "cpf": cpf_limpo,
@@ -93,20 +117,7 @@ async def cadastrar_estudante(
         "data_envio": datetime.now(),
         "justificativa_recusa": ""
     }
-
-    # Tratamento de Duplicidade
-    try:
-        colecao = db["estudantes"]
-        colecao.insert_one(novo_estudante)
-
-        with open(caminho_arquivo, "wb") as buffer:
-            shutil.copyfileobj(arquivo.file, buffer)
-            
-    except DuplicateKeyError:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail="Este CPF já possui um cadastro em andamento no sistema."
-        )
+    colecao.insert_one(novo_estudante)
 
     return {"status": "Sucesso", "mensagem": "Cadastro e declaração em PDF recebidos com sucesso!"}
 
