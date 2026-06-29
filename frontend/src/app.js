@@ -19,20 +19,30 @@ function switchView(viewName) {
     });
 
     if (sections[viewName] && navButtons[viewName]) {
-        sections[viewName].classList.remove('hidden');
-        navButtons[viewName].classList.add('btn-active');
+    sections[viewName].classList.remove('hidden');
+    navButtons[viewName].classList.add('btn-active');
 
-        if (viewName === 'secretaria') {
-            const btnVisaoGeral = document.getElementById('btn-sec-visao-geral');
-            if (btnVisaoGeral) btnVisaoGeral.click();
-        } else if (viewName === 'motorista') {
-            carregarListaMotorista().then(() => {
-                atualizarOcupacao();
-            });
-        } else if (viewName === 'visao-geral') {
-            carregarDadosDashboard();
-        }
+
+    if (viewName === 'estudante') {
+
+        verificarStatusAluno();
+
     }
+
+
+    if (viewName === 'secretaria') {
+        const btnVisaoGeral = document.getElementById('btn-sec-visao-geral');
+
+        if (btnVisaoGeral) btnVisaoGeral.click();
+
+    } else if (viewName === 'motorista') {
+
+        carregarListaMotorista().then(() => {
+            atualizarOcupacao();
+        });
+
+    }
+}
 }
 
 navButtons.estudante.addEventListener('click', () => switchView('estudante'));
@@ -907,3 +917,143 @@ inputDataInquerito?.addEventListener("change", async () => {
     }
 
 });
+
+async function verificarStatusAluno() {
+
+    const token = localStorage.getItem('sgtu_token');
+
+    if (!token) return;
+
+
+    try {
+
+        const response = await fetch(
+            `${API_BASE_URL}/meu-status`,
+            {
+                headers:{
+                    Authorization:`Bearer ${token}`
+                }
+            }
+        );
+
+
+        if(!response.ok) return;
+
+
+        const aluno = await response.json();
+
+
+        const formulario =
+        document.getElementById('form-cadastro');
+
+
+        const status =
+        document.getElementById('status-matricula');
+
+
+        if(aluno.status === "Autorizado"){
+
+
+            formulario.classList.add("hidden");
+
+
+            status.innerText = "Ativado";
+
+
+            status.className =
+            `
+            inline-block 
+            bg-green-100 
+            text-green-700 
+            font-semibold 
+            px-4 
+            py-1.5 
+            rounded-full 
+            text-xs 
+            my-2 
+            border 
+            border-green-200
+            `;
+
+
+        }
+
+
+    } catch(error){
+
+        console.error(
+            "Erro ao verificar status:",
+            error
+        );
+
+    }
+
+}
+
+async function verificarStatusAluno(){
+
+    const token = localStorage.getItem('sgtu_token');
+
+    if(!token) return;
+
+
+    try{
+
+        const response = await fetch(
+            `${API_BASE_URL}/meu-status`,
+            {
+                headers:{
+                    Authorization:`Bearer ${token}`
+                }
+            }
+        );
+
+
+        const aluno = await response.json();
+
+
+        const formulario =
+        document.getElementById('form-cadastro');
+
+
+        const status =
+        document.getElementById('status-matricula');
+
+
+        if(aluno.status === "Autorizado"){
+
+            formulario.classList.add("hidden");
+
+
+            status.innerText =
+            "Ativado";
+
+
+            status.className =
+            `
+            inline-block
+            bg-green-100
+            text-green-700
+            font-semibold
+            px-4
+            py-1.5
+            rounded-full
+            text-xs
+            my-2
+            border
+            border-green-200
+            `;
+
+        }
+
+
+    }catch(error){
+
+        console.error(
+            "Erro ao buscar status:",
+            error
+        );
+
+    }
+
+}
